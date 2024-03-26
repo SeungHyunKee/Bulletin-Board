@@ -31,6 +31,19 @@ public class BoardDaoImpl extends SqlSessionDaoSupport implements BoardDao {
 	public List<BoardVO> getAllBoard() {
 		return getSqlSession().selectList("getAllBoard");
 	}
-	
 
+	@Override
+	public int increaseViewCount(int id) {
+		return getSqlSession().update("increaseViewCount", id);
+	}
+
+	@Override
+	public BoardVO getOneBoard(int id) {
+		return getSqlSession().selectOne("getOneBoard", id);
+	}
+	
+	// 게시글 수정을 위한 메소드 구현
+	public int updateOneBoard(BoardVO boardVO) {
+		return getSqlSession().selectOne("updateOneBoard", boardVO);
+	}
 }

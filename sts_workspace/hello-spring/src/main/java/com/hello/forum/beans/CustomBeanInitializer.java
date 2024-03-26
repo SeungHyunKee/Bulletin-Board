@@ -34,8 +34,14 @@ public class CustomBeanInitializer {
 	@Value("${app.multipart.obfuscation.hide-ext.enable:false}")
 	private boolean enableObfuscationHideExt;
 	
-	@Value("${app.multipart.available-file-list}")
+	@Value("${app.multipart.available-file-list.enable:false}")
+	private boolean enableAvailableFileList;
+	
+	@Value("${app.multipart.available-file-list.list}")
 	private List<String> availableFileList;
+	
+	@Value("${app.multipart.available-file-list.handler: tika}")
+	private String fileMimeTypeHandler;
 	
 	//필요한 데이터의 할당 전 이므로 생성자에서는 값들이 들어가지 않는다
 	public CustomBeanInitializer() {
@@ -79,6 +85,8 @@ public class CustomBeanInitializer {
 		fileHandler.setEnableObfuscation(this.enableObfuscation);
 		fileHandler.setEnableObfuscationHideExt(this.enableObfuscationHideExt);
 		fileHandler.setAvailableFileList(this.availableFileList);
+		fileHandler.setEnableAvailableFileList(this.enableAvailableFileList);
+		fileHandler.setHandler(this.fileMimeTypeHandler);
 		return fileHandler;
 	}
 }

@@ -1,8 +1,11 @@
 package com.hello.forum.bbs.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hello.forum.bbs.service.BoardService;
 import com.hello.forum.bbs.vo.BoardListVO;
 import com.hello.forum.bbs.vo.BoardVO;
+import com.hello.forum.beans.FileHandler;
+import com.hello.forum.utils.ValidationUtils;
+
+//import jakarta.validation.Valid;
 
 @Controller
 public class BoardControllerr {
 
+	/*
+	 * 파일다운로드를 위해, fileHandler을 이용하기위해 멤버변수 선언
+	 */
+	@Autowired
+	private FileHandler fileHandler;
+	
 	/*
 	 * Bean Container 에서 BoardService타입객체를 찾아
 	 * 아래 멤버변수에게 할당한다(DI)
@@ -78,8 +91,14 @@ public class BoardControllerr {
 			/*Comand Object
 			 * 파라미터로 전송된 이름과 BoardVO의 멤버변수의 이름과 같은것이 있다면
 			 * 해당 멤버변수에 파라미터의 값을 할당해준다(Setter 이용) - 값을 자동으로 넣어준다*/
+			
+			
+//			@Valid   //@Valid : @NotEmpty, @Email, @Size, @Min, @Max 이런것들을 검사하도록 지시 
 			BoardVO boardVO, //사용자가 데이터를 안보내주면 여기엔 데이터가 없는것
-			@RequestParam MultipartFile file
+//			BindingResult bindingResult, 
+			//Bindingresult : @Valid에 의해 실행된 파라미터 검사(NotEmpty, Email, Size, Min, Max)의 결과
+			@RequestParam MultipartFile file,
+			Model model
 			) {
 		
 		/*
@@ -101,6 +120,49 @@ public class BoardControllerr {
 //		System.out.println("이메일: " + boardVO.getEmail());
 //		System.out.println("내용: " + boardVO.getContent());
 
+		//검사내용 확인
+//		if(bindingResult.hasErrors()) {
+//			model.addAttribute("boardVO", boardVO);
+//			return "board/boardwrite";
+//		}
+		
+		
+		//수동검사 시작 (체크해야하는 파라미터 개수만큼 적어줌)
+		boolean isNotEmptySubject = ValidationUtils.notEmpty(boardVO.getSubject());
+		boolean isNotEmptyEmail = ValidationUtils.notEmpty(boardVO.getEmail());
+		boolean isNotEmptyContent = ValidationUtils.notEmpty(boardVO.getContent());
+		boolean isEmailFormat = ValidationUtils.email(boardVO.getEmail());
+		
+		if(! isNotEmptySubject) {
+			//제목을 입력하지 않았다면
+			model.addAttribute("errorMessage", "제목은 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardwrite";
+		}
+		
+		if(! isNotEmptyEmail) {
+			//이메일을 입력하지 않았다면
+			model.addAttribute("errorMessage", "이메일은 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardwrite";
+		}
+		
+		if(! isNotEmptyContent) {
+			//내용을 입력하지 않았다면
+			model.addAttribute("errorMessage", "내용은 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardwrite";
+		}
+		
+		if(! isEmailFormat) {
+			// 이메일을 이메일 형태로 입력하지 않았다면
+			model.addAttribute("errorMessage", "이메일을 올바른 형태로 작성해주세요.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardwrite";
+		}
+		
+		
+		
 		boolean isCreateSuccess = this.boardService.createNewBoard(boardVO, file);
 		if (isCreateSuccess) {
 			System.out.println("글 등록 성공!");
@@ -156,13 +218,52 @@ public class BoardControllerr {
 	 * @return 
 	 */
 	@PostMapping("/board/modify/{id}")
-	public String doBoardModify(@PathVariable int id, BoardVO boardVO) {
+	public String doBoardModify(@PathVariable int id, 
+								 BoardVO boardVO, 
+								 @RequestParam MultipartFile file,
+								 Model model) {
+		
+		//수동검사 시작 (체크해야하는 파라미터 개수만큼 적어줌)
+		boolean isNotEmptySubject = ValidationUtils.notEmpty(boardVO.getSubject());
+		boolean isNotEmptyEmail = ValidationUtils.notEmpty(boardVO.getEmail());
+		boolean isNotEmptyContent = ValidationUtils.notEmpty(boardVO.getContent());
+		boolean isEmailFormat = ValidationUtils.email(boardVO.getEmail());
+		
+		if(! isNotEmptySubject) {
+			//제목을 입력하지 않았다면
+			model.addAttribute("errorMessage", "제목을 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardmodify";
+		}
+		
+		if(! isNotEmptyEmail) {
+			//이메일을 입력하지 않았다면
+			model.addAttribute("errorMessage", "이메일은 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardmodify";
+		}
+		
+		if(! isNotEmptyContent) {
+			//내용을 입력하지 않았다면
+			model.addAttribute("errorMessage", "내용은 필수입력값 입니다.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardmodify";
+		}
+		
+		if(! isEmailFormat) {
+			// 이메일을 이메일 형태로 입력하지 않았다면
+			model.addAttribute("errorMessage", "이메일을 올바른 형태로 작성해주세요.");
+			model.addAttribute("boardVO", boardVO);
+			return "board/boardmodify";
+		}
+		
+		
 		
 		// Command Object에는 전달된 ID가 없으므로
 		// PathVariable로 전달된 ID를 셋팅해준다.
 		boardVO.setId(id);
 		
-		boolean isUpdatedSuccess = this.boardService.updateOneBoard(boardVO);
+		boolean isUpdatedSuccess = this.boardService.updateOneBoard(boardVO, file);
 		
 		if(isUpdatedSuccess) {
 			System.out.println("수정에 성공했습니다!");
@@ -206,11 +307,28 @@ public class BoardControllerr {
 		
 		//게시글 목록으로 이동
 		return "redirect:/board/list";
+		
 	}
 	
-	
-	
-	
+	@GetMapping("/board/file/download/{id}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable int id){
+		
+		//파일 다운로드를 위해서 id 값으로 게시글을 조회한다
+		BoardVO boardVO = this.boardService.getOneBoard(id, false); //조회수늘어나면안되므로 flase
+		
+		//만약, 게시글이 존재하지 않다면 "잘못된 접근입니다" 라는 에러를 사용자에게 보여준다
+		if (boardVO == null) {
+			throw new IllegalArgumentException("잘못된 접근입니다.");
+		}
+		
+		//첨부된 파일이 없을경우에도 "잘못된 접근입니다" 라는 에러를 사용자에게 보여준다
+		if ( boardVO.getFileName()==null || boardVO.getFileName().length()==0) {
+			throw new IllegalArgumentException("잘못된 접근입니다.");
+		}
+		
+		//첨부된파일이 있을경우엔 파일을 사용자에게 보내준다(Download)
+		return this.fileHandler.download(boardVO.getOriginFileName(), boardVO.getFileName());
+	}
 	
 }
 

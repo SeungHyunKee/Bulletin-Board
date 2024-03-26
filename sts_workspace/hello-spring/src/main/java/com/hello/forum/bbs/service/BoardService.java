@@ -36,9 +36,10 @@ public interface BoardService {
 	/**
 	 * 전달받은 게시글 정보로 게시글을 수정한다.
 	 * @param boardVO 수정할 게시글의 정보
+	 * @param file  사용자가 업로드한파일(이미 파일이 첨부된 게시글에 새로운파일을 업로드하면 기존의 첨부된파일은 삭제된다.)
 	 * @return 수정 성공 여부
 	 */
-	public boolean updateOneBoard(BoardVO boardVO);
+	public boolean updateOneBoard(BoardVO boardVO, MultipartFile file);
 
 	
 	

@@ -16,7 +16,7 @@ pageEncoding="UTF-8"%>
       div.grid {
         display: grid;
         grid-template-columns: 80px 1fr;
-        grid-template-rows: repeat(6, 28px) 320px 1fr;
+        grid-template-rows: repeat(7, 28px) 320px 1fr;
         row-gap: 10px;
       }
       div.grid > div.btn-group {
@@ -60,14 +60,26 @@ pageEncoding="UTF-8"%>
     <div class="grid">
       <label for="subject">제목</label>
       <div>${boardVO.subject}</div>
+
       <label for="email">이메일</label>
       <div>${boardVO.email}</div>
+
       <label for="viewCnt">조회수</label>
       <div>${boardVO.viewCnt}</div>
+
+      <label for="originFileName">첨부파일</label>
+      <div>
+        <a href="/board/file/download/${boardVO.id}">
+          ${boardVO.originFileName}
+        </a>
+      </div>
+
       <label for="crtDt">등록일</label>
       <div>${boardVO.crtDt}</div>
+
       <label for="mdfyDt">수정일</label>
       <div>${boardVO.mdfyDt}</div>
+
       <label for="content">내용</label>
       <div>${boardVO.content}</div>
       <div class="btn-group">
