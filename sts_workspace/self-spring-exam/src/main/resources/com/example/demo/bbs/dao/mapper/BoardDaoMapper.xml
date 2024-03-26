@@ -51,4 +51,16 @@
           FROM BOARD
          WHERE ID = #{_parameter}
 	</select>
+	
+	<!--게시글 수정을 위한 메소드-->
+	<update id="updateOneBoard"
+			parameterType="com.hello.forum.bbs.vo.BoardVO">
+		UPDATE BOARD
+			SET SUBJECT = #{subject}
+			, CONTENT = #{content}
+			, EMAIL = #{email}
+			, MDFY_DT = SYSDATE
+		 WHERE ID = #{id}
+	</update>
+	
 </mapper>

@@ -45,4 +45,6 @@ public interface BoardDao {
 	 */
 
 	public int createNewBoard(BoardVO boardVO);
+
+	public int updateOneBoard(BoardVO boardVO);
 }

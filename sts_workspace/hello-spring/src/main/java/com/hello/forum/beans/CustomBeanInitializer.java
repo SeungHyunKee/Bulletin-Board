@@ -89,6 +89,14 @@ public class CustomBeanInitializer {
 		fileHandler.setHandler(this.fileMimeTypeHandler);
 		return fileHandler;
 	}
+	
+	// 회원가입시 passwordㅇ암호화하기
+	//SHA알고리즘이 필요한경우 Autowired에서 가져온다!
+	@Bean
+	SHA sha() {
+		
+		return new SHA();
+	}
 }
 
 
