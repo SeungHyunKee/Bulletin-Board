@@ -4,6 +4,8 @@ pageEncoding="UTF-8"%>
 <html>
   <head>
     <meta charset="UTF-8" />
+    <jsp:include page="../commonheader.jsp"></jsp:include>
+
     <title>로그인</title>
     <link rel="stylesheet" href="/css/common.css" />
     <style type="text/css">
@@ -12,6 +14,13 @@ pageEncoding="UTF-8"%>
         grid-template-columns: 120px 1fr;
         grid-template-rows: 28px 28px 1fr;
         row-gap: 10px;
+      }
+
+      .error {
+        grid-column: 1 / -1;
+        color: #f00;
+        padding-left: 1rem;
+        margin: 0;
       }
     </style>
     <script type="text/javascript" src="/js/lib/jquery-3.7.1.min.js"></script>
@@ -39,5 +48,6 @@ pageEncoding="UTF-8"%>
         </div>
       </div>
     </form>
+    <!-- <div>아이디 또는 비밀번호가 잘못되었습니다.</div> -->
   </body>
 </html>

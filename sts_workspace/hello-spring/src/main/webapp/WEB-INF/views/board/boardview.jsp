@@ -5,36 +5,19 @@ pageEncoding="UTF-8"%>
   <head>
     <meta charset="UTF-8" />
     <title>게시글 내용</title>
+    <jsp:include page="../commonheader.jsp"></jsp:include>
+
+    <link rel="stylesheet" href="/css/common.css" />
+
     <style type="text/css">
-      a:link,
-      a:hover,
-      a:visited,
-      a:active {
-        color: #333;
-        text-decoration: none;
-      }
       div.grid {
         display: grid;
         grid-template-columns: 80px 1fr;
         grid-template-rows: repeat(7, 28px) 320px 1fr;
         row-gap: 10px;
       }
-      div.grid > div.btn-group {
-        grid-column: 1 / 3;
-      }
-      div.grid > div.right-algin {
-        text-align: right;
-      }
-      label {
-        padding-left: 10px;
-      }
-      button,
-      input,
-      textarea {
-        padding: 10px;
-      }
     </style>
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
       //1.페이지 렌더링이 모두 끝났을 때
       window.onload = function () {
         // 삭제 링크를 클릭하면
@@ -53,16 +36,19 @@ pageEncoding="UTF-8"%>
           }
         });
       };
-    </script>
+    </script> -->
+    <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.1.min.js"></script>-->
+    <script type="text/javascript" src="/js/boardview.js"></script>
   </head>
   <body>
+    <jsp:include page="../member/membermenu.jsp"></jsp:include>
     <h1>게시글 작성</h1>
-    <div class="grid">
+    <div class="grid" data-id="${boardVO.id}">
       <label for="subject">제목</label>
       <div>${boardVO.subject}</div>
 
-      <label for="email">이메일</label>
-      <div>${boardVO.email}</div>
+      <label for="email">작성자이름</label>
+      <div>${boardVO.memberVO.name}</div>
 
       <label for="viewCnt">조회수</label>
       <div>${boardVO.viewCnt}</div>

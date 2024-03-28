@@ -6,6 +6,8 @@ pageEncoding="UTF-8"%>
   <head>
     <meta charset="UTF-8" />
     <title>회원가입</title>
+    <jsp:include page="../commonheader.jsp"></jsp:include>
+
     <style type="text/css">
       div.grid {
         display: grid;

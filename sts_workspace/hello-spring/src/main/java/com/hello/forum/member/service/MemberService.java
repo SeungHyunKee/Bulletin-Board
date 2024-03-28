@@ -28,4 +28,9 @@ public interface MemberService {
 	 * @return 회원정보
 	 */
 	public MemberVO getMember(MemberVO memberVO);
+
+
+	public boolean deleteMe(String email);
+
+
 }

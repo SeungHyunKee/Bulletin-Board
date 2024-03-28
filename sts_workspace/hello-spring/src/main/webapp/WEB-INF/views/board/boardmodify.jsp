@@ -6,6 +6,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
   <head>
     <meta charset="UTF-8" />
     <title>게시글 수정하기</title>
+    <!-- <link rel="stylesheet" href="/css/common.css" /> -->
+    <jsp:include page="../commonheader.jsp"></jsp:include>
+
     <style type="text/css">
       /*div인데 클래스가 grid인것*/
       div.grid {
@@ -14,32 +17,12 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         grid-template-rows: 28px 28px 28px 320px 1fr;
         row-gap: 10px;
       }
-      div.grid > div.btn-group {
-        grid-column: 1 / 3;
-      }
-      div.grid div.right-align {
-        text-align: right;
-      }
-      label {
-        padding-left: 10px;
-      }
-      button,
-      input,
-      textarea {
-        padding: 10px;
-      }
-      input[type="file"] {
-        padding: 0;
-      }
     </style>
-    <script type="text/javascript">
-      window.onload = function () {
-        var dialog = document.querySelector(".alert-dialog");
-        dialog.showModal();
-      };
-    </script>
+    <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.1.min.js"></script>-->
+    <script type="text/javascript" src="/js/boardmodify.js"></script>
   </head>
   <body>
+    <jsp:include page="../member/membermenu.jsp"></jsp:include>
     <c:if test="${not empty errorMessage}">
       <dialog class="alert-dialog">
         <h1>${errorMessage}</h1>

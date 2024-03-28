@@ -1,5 +1,7 @@
 package com.hello.forum.bbs.vo;
 
+import com.hello.forum.member.vo.MemberVO;
+
 //import jakarta.validation.constraints.Email;
 //import jakarta.validation.constraints.NotEmpty;
 
@@ -28,6 +30,16 @@ public class BoardVO {
 	 */
 	private String originFileName;
 	private String delYn;
+	
+	private MemberVO memberVO;
+	
+	
+	public MemberVO getMemberVO() {
+		return memberVO;
+	}
+	public void setMemberVO(MemberVO memberVO) {
+		this.memberVO = memberVO;
+	}
 	public int getId() {
 		return id;
 	}

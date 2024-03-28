@@ -36,5 +36,12 @@ public class MemberDaoImpl extends SqlSessionDaoSupport implements MemberDao {
 	public MemberVO selectMemberByEmailAndPassword(MemberVO memberVO) {
 		return getSqlSession().selectOne("selectMemberByEmailAndPassword", memberVO);
 	}
+
+	@Override
+	public int deleteMemberByEmail(String email) {
+		return getSqlSession().update("deleteMemberByEmail", email);
+ 	}
+	
+	
 	
 }
