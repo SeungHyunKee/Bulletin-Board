@@ -191,6 +191,18 @@ public class FileHandler {
 			file.delete();
 		}
 	}
+	/**
+	 * 서버에 저장된 파일을 반환한다.
+	 * 만약, 존재하지 않는 파일이라면 File인스턴스만 반환한다.
+	 * @param fileName
+	 * @return
+	 */
+	public File getStoredFile(String fileName) {
+		return new File(this.baseDir, fileName);
+	}
+	
+	
+	
 	
 	/**
 	 * 서버에 저장된 파일을 사용자에게 다운로드한다.

@@ -135,7 +135,9 @@ public class MemberController {
 		
 		@ResponseBody //AJAX반환시키기 위해서 붙이는 annotation
 		@PostMapping("/member/login")
-		public AjaxResponse doLogin(MemberVO memberVO, HttpSession session){ // session:상태를 기억하게하는 객체
+		public AjaxResponse doLogin(MemberVO memberVO, HttpSession session,
+									@RequestParam(defaultValue = "/board/list") String nextUrl){ // session:상태를 기억하게하는 객체
+			System.out.println("nextUrl: " + nextUrl);
 			
 			//Validation Check (파라미터 유효성 검사) -> 패턴지정해주고, 마지막에 start() 하면 유효셩검사 싹 해주고 검사를 받아올 수 있다
 			Validator<MemberVO> validator = new Validator<>(memberVO);
@@ -154,12 +156,13 @@ public class MemberController {
 				MemberVO member = this.memberService.getMember(memberVO);
 				//로그인이 정상적으로 이루어졌다면 세션을 생성한다
 				session.setAttribute("_LOGIN_USER_", member);
+				session.setMaxInactiveInterval(20 * 60); //세션이 유지될 수 있는 시간을 지정할수있다(default : 30분)
 			}catch(IllegalArgumentException iae) {
 				//로그인이 실패했다면 화면으로 실패사유를 보내준다.
 				return new AjaxResponse().append("errorMessage", iae.getMessage());
 			}
 			
-			return new AjaxResponse().append("next", "/board/list");
+			return new AjaxResponse().append("next", nextUrl);
 		}
 		
 		//로그아웃 처리하는 url

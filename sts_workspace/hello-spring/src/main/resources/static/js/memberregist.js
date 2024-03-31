@@ -8,6 +8,7 @@ $().ready(function () {
       {
         email: $("#email").val(),
         password: $("#password").val(),
+        nextUrl: $("#next").val(),
       },
       function (response) {
         var errors = response.data.errors;

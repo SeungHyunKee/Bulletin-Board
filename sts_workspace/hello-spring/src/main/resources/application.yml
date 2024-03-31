@@ -5,10 +5,10 @@ spring:
         driver-class-name: oracle.jdbc.driver.OracleDriver
         username: SPRING_BOOT
         password: 1234
-    mvc:
-        view:
-            prefix: /WEB-INF/views/
-            suffix: .jsp
+#    mvc:
+#        view:
+#            prefix: /WEB-INF/views/
+#            suffix: .jsp
     servlet:
         #파일 업로드 설정
         multipart:
@@ -27,29 +27,41 @@ mybatis:
     
 #사용자 설정
 app:
-   multipart:
-   #파일업로드 위치지정
-       base-dir: c:/uploadFiles
-       #난독화 여부 설정
-       obfuscation:
-           #파일명 난독화 할 경우 true
-           enable: true
-           #파일 확장자 가리기 여부 설정
-           hide-ext:
-               #파일 확장자 가릴경우 true
-               enable: true
-       available-file-list:
-           handler: tika
-           enable: true
-           list:
-               audio/aac,
-               video/x-msvideo,
-               text/css,
-               text/csv,
-               application/msword,
-               image/gif,
-               text/html,
-               image/jpeg,
-               application/json,
-               audio/midi,
-               application/x-tika-ooxml
+    authentication:
+        check-url-pattern: /**
+        ignore-url-patterns:
+            /member/login,
+            /member/regist/**,
+            /member/success-delete-me,
+            /member/fail-delete-me,
+            /board/list,
+            /js/**,
+            /css/**,
+            /error/**
+            
+    multipart:
+    #파일업로드 위치지정
+        base-dir: c:/uploadFiles
+        #난독화 여부 설정
+        obfuscation:
+            #파일명 난독화 할 경우 true
+            enable: true
+            #파일 확장자 가리기 여부 설정
+            hide-ext:
+                #파일 확장자 가릴경우 true
+                enable: true
+        available-file-list:
+            handler: tika
+            enable: true
+            list:
+                audio/aac,
+                video/x-msvideo,
+                text/css,
+                text/csv,
+                application/msword,
+                image/gif,
+                text/html,
+                image/jpeg,
+                application/json,
+                audio/midi,
+                application/x-tika-ooxml

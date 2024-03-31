@@ -69,7 +69,8 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
                       >
                     </c:if>
                   </td>
-                  <td class="center-align">${board.memberVO.name}</td> <!--작성자의 이름이 보임-->
+                  <td class="center-align">${board.memberVO.name}</td>
+                  <!--작성자의 이름이 보임-->
                   <td class="center-align">${board.viewCnt}</td>
                   <td class="center-align">${board.crtDt}</td>
                   <td class="center-align">${board.mdfyDt}</td>
@@ -89,10 +90,12 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
           </c:choose>
         </tbody>
       </table>
-        <c:if test="${not empty sessionScope._LOGIN_USER_}">
-          <div class="right-align"><a href="/board/write">게시글 등록</a></div>
-        </c:if>
-      </div>
+      <c:if test="${not empty sessionScope._LOGIN_USER_}">
+        <div class="right-align">
+          <a href="/board/excel/download">엑셀 다운로드</a>
+          <a href="/board/write">게시글 등록</a>
+        </div>
+      </c:if>
     </div>
   </body>
 </html>

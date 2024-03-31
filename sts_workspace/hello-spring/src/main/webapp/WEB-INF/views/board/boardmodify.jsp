@@ -14,7 +14,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       div.grid {
         display: grid;
         grid-template-columns: 80px 1fr;
-        grid-template-rows: 28px 28px 28px 320px 1fr;
+        grid-template-rows: 28px 28px 320px 1fr;
         row-gap: 10px;
       }
     </style>
@@ -43,8 +43,8 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
           value="${boardVO.subject}"
         />
 
-        <label for="email">이메일</label>
-        <input id="email" type="email" name="email" value="${boardVO.email}" />
+        <!-- <label for="email">이메일</label>
+        <input id="email" type="email" name="email" value="${boardVO.email}" /> -->
 
         <label for="file">첨부파일</label>
         <!--input type=file의 value는 지정할수없다-->
