@@ -31,7 +31,8 @@ public class MemberServiceImpl implements MemberService{
 		String salt = this.sha.generateSalt();
 		password = this.sha.getEncrypt(password, salt); //암호화가 이루어진(salt도 함) password
 		
-		memberVO.setPassword(password); //회원가입때 사용한 salt를 기억하기 위함(DB에서 사용하기 위해 저장) -> members테이블에 salt를 넣음
+		memberVO.setPassword(password); 
+		//회원가입때 사용한 salt를 기억하기 위함(DB에서 사용하기 위해 저장) -> members테이블에 salt를 넣음
 		memberVO.setSalt(salt);
 		
 		int insertCount = memberDao.createNewMember(memberVO);

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,7 @@ import com.hello.forum.bbs.vo.BoardListVO;
 import com.hello.forum.bbs.vo.BoardVO;
 import com.hello.forum.beans.FileHandler;
 import com.hello.forum.member.vo.MemberVO;
+import com.hello.forum.utils.AjaxResponse;
 import com.hello.forum.utils.ValidationUtils;
 
 import jakarta.servlet.http.HttpSession;
@@ -435,6 +437,15 @@ public class BoardControllerr {
 		return this.fileHandler.download("게시글_목록.xlsx", "게시글_목록.xlsx");
 //		return this.fileHandler.download("게시글_목록.xlsx", storedFile.getName());
 
+	}
+	
+	@ResponseBody // ajax쓸때 붙여야됨(ajax로 요청처리를 전부 할 것이므로)
+	@PostMapping("/board/excel/write")
+	public AjaxResponse doExcelUpload(@RequestParam MultipartFile excelFile) {
+		
+		boolean isSuccess = this.boardService.createMassiveBoard(excelFile);
+		
+		return new AjaxResponse().append("result", isSuccess).append("next", "/board/list"); //성공여부와 다음링크를 돌려줌
 	}
 
 	

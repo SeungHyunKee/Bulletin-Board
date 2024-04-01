@@ -35,7 +35,6 @@ public class BoardDaoImpl extends SqlSessionDaoSupport implements BoardDao {
 	@Autowired
 	@Override      // spring 과 db연결
 	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		// TODO Auto-generated method stub
 		super.setSqlSessionTemplate(sqlSessionTemplate);  //mybatis 프레임워크에 db정보 연결
 	}
 	

@@ -1,7 +1,16 @@
 package com.hello.forum.bbs.service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -159,6 +168,75 @@ public class BoardServiceImpl implements BoardService {
 		
 		int deletedCount = this.boardDao.deleteOneBoard(id);
 		return deletedCount > 0;
+	}
+
+
+	@Override
+	public boolean createMassiveBoard(MultipartFile excelFile) {
+
+		int insertedCount = 0;
+		int rowSize = 0;
+		
+		if (excelFile != null && !excelFile.isEmpty()) {
+			StoredFile storedExcel = this.fileHandler.storeFile(excelFile);
+		
+			if (storedExcel != null) {
+				//엑셀파일을 읽는다
+				// 1.filesystem에 있는 파일을 java로 읽어와야한다(inputstream)
+				InputStream excelFileInputStream = null;
+				try {
+					excelFileInputStream = new FileInputStream(storedExcel.getRealFilePath());
+				} catch(FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				// 2.Apache poi를 활용해서 inputStream의 내용을 엑셀문서로 읽어온다
+				Workbook excelWorkbook = null;
+				if (excelFileInputStream != null) {
+					try {
+						excelWorkbook = new XSSFWorkbook(excelFileInputStream);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
+				//엑셀파일의 특정 sheet에 있는 모든 데이터를 찾아 List<BoardVO>로 만들어준다
+				List<BoardVO> boardListInExcel = new ArrayList<>();
+				if(excelWorkbook != null) {
+					//sheet를 추출한다
+					Sheet sheet = excelWorkbook.getSheet("Sheet1");
+					
+					//sheet에서 data가 있는 row만큼 반복을 한다.
+					//1.sheet에서 데이터가 몇개의 row로 구성되어있는지 확인한다.
+					rowSize = sheet.getPhysicalNumberOfRows();
+					//첫번째 row부터 row size만큼 반복
+					for(int i = 1; i < rowSize; i++) {
+						// 3.i번째 row를 가져온다.
+						Row row = sheet.getRow(i);
+						
+						//4. row에 있는 cell(게시글정보)들을 가져온다.
+						String author = row.getCell(0).getStringCellValue();
+						String subject = row.getCell(1).getStringCellValue();
+						String description = row.getCell(2).getStringCellValue();
+						
+						BoardVO boardVO = new BoardVO();
+						boardVO.setEmail(author);
+						boardVO.setSubject(subject);
+						boardVO.setContent(description);
+						
+						boardListInExcel.add(boardVO);
+					}
+				}
+				
+				//List<BoardVO>에 있는 내용을 모두 insert 한다.
+				for(BoardVO boardVO : boardListInExcel) {
+					insertedCount += this.boardDao.insertNewBoard(boardVO);
+				}
+			}
+		}
+		
+		// 한건이상 insert했고, 엑셀파일의 row개수와 insert한 row개수가 같다면 성공했다고 보는 것.
+		return insertedCount > 0 && insertedCount == rowSize - 1;
 	}
 
 }
