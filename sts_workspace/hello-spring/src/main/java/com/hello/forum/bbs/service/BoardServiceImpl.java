@@ -21,6 +21,9 @@ import com.hello.forum.bbs.vo.BoardVO;
 import com.hello.forum.beans.FileHandler;
 import com.hello.forum.beans.FileHandler.StoredFile;
 
+import io.github.seccoding.excel.option.ReadOption;
+import io.github.seccoding.excel.read.ExcelRead;
+
 /*
  * @Service : @Controller와 @Repository를 연결하는 역할을 함
  * 	- 역할 : 주로 Transaction처리 담당
@@ -237,6 +240,40 @@ public class BoardServiceImpl implements BoardService {
 		
 		// 한건이상 insert했고, 엑셀파일의 row개수와 insert한 row개수가 같다면 성공했다고 보는 것.
 		return insertedCount > 0 && insertedCount == rowSize - 1;
+	}
+
+	
+
+	/**
+	 * 더 간단하게 엑셀파일을 읽는 방법
+	 */
+	@Override
+	public boolean createMassiveBoard2(MultipartFile excelFile) {
+
+		int insertedCount = 0;
+		int rowSize = 0;
+		
+		if (excelFile != null && !excelFile.isEmpty()) {
+			StoredFile storedExcel = this.fileHandler.storeFile(excelFile, false); //확장자를 숨기지 않음
+		
+			if (storedExcel != null) {		
+				
+				ReadOption readOption = new ReadOption();
+				readOption.setFilePath(storedExcel.getRealFilePath());
+				
+				List<BoardVO> boardListInExcel = new ExcelRead<BoardVO>()
+						.readToList(readOption, BoardVO.class);
+				rowSize = boardListInExcel.size(); //여기서는 -1을 해줄 필요 없음
+				
+				//List<BoardVO>에 있는 내용을 모두 insert 한다.
+				for(BoardVO boardVO : boardListInExcel) {
+					insertedCount += this.boardDao.insertNewBoard(boardVO);
+				}
+			}
+		}
+		
+		// 한건이상 insert했고, 엑셀파일의 row개수와 insert한 row개수가 같다면 성공했다고 보는 것.
+		return insertedCount > 0 && insertedCount == rowSize;
 	}
 
 }

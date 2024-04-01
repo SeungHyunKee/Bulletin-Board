@@ -89,10 +89,10 @@ public class ReadOption {
 	
 	private List<Short> makeAndGetOutputColumnIndex() {
 		if ( this.outputColumns == null ) {
-			return new ArrayList<Short>();
+			return new ArrayList<>();
 		}
 		
-		outputColumnIndex = new ArrayList<Short>();
+		outputColumnIndex = new ArrayList<>();
 		
 		for (String column : outputColumns) {
 			CellReference cr = new CellReference(column + "1");

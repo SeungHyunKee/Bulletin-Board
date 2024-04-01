@@ -32,6 +32,8 @@ import com.hello.forum.member.vo.MemberVO;
 import com.hello.forum.utils.AjaxResponse;
 import com.hello.forum.utils.ValidationUtils;
 
+import io.github.seccoding.excel.option.WriteOption;
+import io.github.seccoding.excel.write.ExcelWrite;
 import jakarta.servlet.http.HttpSession;
 
 //import jakarta.validation.Valid;
@@ -345,6 +347,22 @@ public class BoardControllerr {
 		return this.fileHandler.download(boardVO.getOriginFileName(), boardVO.getFileName());
 	}
 	
+	@GetMapping("/board/excel/download2")
+	public ResponseEntity<Resource> downloadExcelFile2(){
+		BoardListVO boardListVO = boardService.getAllBoard(); //게시글 조회
+		
+		WriteOption<BoardVO>writeOption = new WriteOption<>();
+		writeOption.setFileName("게시글 목록.xlsx");
+		writeOption.setFilePath("C:\\uploadFiles");
+		writeOption.setContents(boardListVO.getBoardList());
+		
+		File excelFile = ExcelWrite.write(writeOption);
+		
+		return this.fileHandler.download("게시글_목록.xlsx", excelFile.getName());
+		
+	}
+	
+	
 	//excel 다운로드
 	@GetMapping("/board/excel/download")
 	public ResponseEntity<Resource> downloadExcelFile(){
@@ -443,9 +461,12 @@ public class BoardControllerr {
 	@PostMapping("/board/excel/write")
 	public AjaxResponse doExcelUpload(@RequestParam MultipartFile excelFile) {
 		
-		boolean isSuccess = this.boardService.createMassiveBoard(excelFile);
+//		boolean isSuccess = this.boardService.createMassiveBoard(excelFile);
+		boolean isSuccess = this.boardService.createMassiveBoard2(excelFile);
+
 		
-		return new AjaxResponse().append("result", isSuccess).append("next", "/board/list"); //성공여부와 다음링크를 돌려줌
+		return new AjaxResponse().append("result", isSuccess).append("next", "/board/list"); 
+																		//성공여부와 다음링크를 돌려줌
 	}
 
 	

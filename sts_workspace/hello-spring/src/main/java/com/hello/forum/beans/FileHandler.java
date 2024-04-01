@@ -57,6 +57,74 @@ public class FileHandler {
 	public void setHandler(String handler) {
 		this.handler = handler;
 	}
+	
+	public StoredFile storeFile(MultipartFile multipartFile, boolean hideExt) {
+		
+		//사용자가 업로드한 파일의 이름
+				String uplodedFileName = multipartFile.getOriginalFilename();
+				
+				//난독화정책에 의해서 만들어진 파일의 이름
+				//서버에 저장될 파일의 이름
+				String fileName = this.getObfuscationFileName(uplodedFileName, hideExt);
+				
+				//파일이 저장될 경로
+				//this.baseDir : app.multipart.base-dir에 할당된 값.
+				File storePath = new File(this.baseDir, fileName);
+				
+				// storePath.getParentFile() = this.baseDir. 
+				// 즉, 업로드한 경로가 존재하지 않을 경우(=폴더가 없을경우)
+				if (! storePath.getParentFile().exists()) {
+					//업로드할 경로(폴더)를 만들어준다.
+					storePath.getParentFile().mkdirs();
+				}
+				
+				//사용자가 업로드한 파일을 storePath 경로로 저장시킨다
+				try {
+					multipartFile.transferTo(storePath);
+				} catch (IllegalStateException | IOException e) {
+					e.printStackTrace();
+					return null; //업로드에 실패했으므로 null반환
+				}
+				
+				if(this.enableAvailableFileList) {
+					//업로드된 파일의 마임타입을 가져온다.
+					String mimeType = null;
+					
+					if(this.handler.equalsIgnoreCase("tika")){
+						Tika tika = new Tika();
+						try {
+							mimeType = tika.detect(storePath);
+						} catch (IOException e) {
+							System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+							storePath.delete();
+							e.printStackTrace();
+							return null;
+						}
+					}
+					
+					else if(this.handler.equalsIgnoreCase("jmimemagic")) {
+						Path path = Paths.get(storePath.getAbsolutePath());
+						try {
+							byte[] data = Files.readAllBytes(path);
+							MagicMatch match = Magic.getMagicMatch(data);
+							mimeType = match.getMimeType();
+						} catch (IOException | MagicParseException | MagicMatchNotFoundException | MagicException e) {
+							System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+							storePath.delete();
+							e.printStackTrace();
+							return null;				}
+					}
+					if(! this.availableFileList.contains(mimeType)) {
+						storePath.delete();
+						System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+						storePath.delete();
+						return null;
+					}
+					System.out.println(mimeType + "파일은 업로드 했습니다.");
+				}
+				//업로드 결과를 반환한다.(여기까지 왔다는건 업로드 성공했다는것)
+				return new StoredFile(multipartFile.getOriginalFilename(), storePath); 
+	}
 
 	/**
 	 * 사용자가 업로드한 파일을 서버에 저장한다.
@@ -65,72 +133,9 @@ public class FileHandler {
 	 * 						(Spring에서 사용자가 업로드한 파일은 MultipartFile로 받아올수있다)
 	 * @return 업로드 결과(사용자가 업로드한 파일명, 저장된 파일명, 저장된 파일의 크기, 파일의 경로
 	 */
+	
 	public StoredFile storeFile(MultipartFile multipartFile) {
-		
-		//사용자가 업로드한 파일의 이름
-		String uplodedFileName = multipartFile.getOriginalFilename();
-		
-		//난독화정책에 의해서 만들어진 파일의 이름
-		//서버에 저장될 파일의 이름
-		String fileName = this.getObfuscationFileName(uplodedFileName);
-		
-		//파일이 저장될 경로
-		//this.baseDir : app.multipart.base-dir에 할당된 값.
-		File storePath = new File(this.baseDir, fileName);
-		
-		// storePath.getParentFile() = this.baseDir. 
-		// 즉, 업로드한 경로가 존재하지 않을 경우(=폴더가 없을경우)
-		if (! storePath.getParentFile().exists()) {
-			//업로드할 경로(폴더)를 만들어준다.
-			storePath.getParentFile().mkdirs();
-		}
-		
-		//사용자가 업로드한 파일을 storePath 경로로 저장시킨다
-		try {
-			multipartFile.transferTo(storePath);
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-			return null; //업로드에 실패했으므로 null반환
-		}
-		
-		if(this.enableAvailableFileList) {
-			//업로드된 파일의 마임타입을 가져온다.
-			String mimeType = null;
-			
-			if(this.handler.equalsIgnoreCase("tika")){
-				Tika tika = new Tika();
-				try {
-					mimeType = tika.detect(storePath);
-				} catch (IOException e) {
-					System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
-					storePath.delete();
-					e.printStackTrace();
-					return null;
-				}
-			}
-			
-			else if(this.handler.equalsIgnoreCase("jmimemagic")) {
-				Path path = Paths.get(storePath.getAbsolutePath());
-				try {
-					byte[] data = Files.readAllBytes(path);
-					MagicMatch match = Magic.getMagicMatch(data);
-					mimeType = match.getMimeType();
-				} catch (IOException | MagicParseException | MagicMatchNotFoundException | MagicException e) {
-					System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
-					storePath.delete();
-					e.printStackTrace();
-					return null;				}
-			}
-			if(! this.availableFileList.contains(mimeType)) {
-				storePath.delete();
-				System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
-				storePath.delete();
-				return null;
-			}
-			System.out.println(mimeType + "파일은 업로드 했습니다.");
-		}
-		//업로드 결과를 반환한다.(여기까지 왔다는건 업로드 성공했다는것)
-		return new StoredFile(multipartFile.getOriginalFilename(), storePath); 
+		return this.storeFile(multipartFile, true);
 	}
 	
 	
@@ -144,7 +149,7 @@ public class FileHandler {
 	 * @param fileName 사용자가 업로드한 파일의 이름
 	 * @return 난독화된 파일의 이름
 	 */
-	private String getObfuscationFileName(String fileName) {
+	private String getObfuscationFileName(String fileName, boolean hideExt) {
 		
 		//application.yml파일의 
 		// app.multipart.obfuscation.enable의 값이 true일 경우
@@ -164,7 +169,7 @@ public class FileHandler {
 			/*
 			 * app.multipart.obfuscation.hide-ext.enable의 값이 true일때
 			 */
-			if (this.enableObfuscationHideExt) {
+			if (this.enableObfuscationHideExt && hideExt) {
 				//난독화된 파일의 이름을 반환
 				return obfuscationName;
 			}

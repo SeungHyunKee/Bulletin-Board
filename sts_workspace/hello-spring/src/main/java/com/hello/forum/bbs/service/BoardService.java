@@ -61,6 +61,14 @@ public interface BoardService {
 	 */
 	public boolean createMassiveBoard(MultipartFile excelFile);
 	
+	
+	/**
+	 * 엑셀파일로 게시글을 대량등록한다2.
+	 * 
+	 * @param excelFile
+	 * @return
+	 */
+	public boolean createMassiveBoard2(MultipartFile excelFile);
 }
 
 

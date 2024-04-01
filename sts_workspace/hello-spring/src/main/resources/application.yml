@@ -64,4 +64,5 @@ app:
                 image/jpeg,
                 application/json,
                 audio/midi,
-                application/x-tika-ooxml
+                application/x-tika-ooxml,
+                application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
