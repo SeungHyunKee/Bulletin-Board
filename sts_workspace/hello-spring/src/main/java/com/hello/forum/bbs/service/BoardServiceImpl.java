@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,7 @@ import com.hello.forum.bbs.vo.BoardListVO;
 import com.hello.forum.bbs.vo.BoardVO;
 import com.hello.forum.beans.FileHandler;
 import com.hello.forum.beans.FileHandler.StoredFile;
+import com.hello.forum.exceptions.PageNotFoundException;
 
 import io.github.seccoding.excel.option.ReadOption;
 import io.github.seccoding.excel.read.ExcelRead;
@@ -50,6 +53,9 @@ import io.github.seccoding.excel.read.ExcelRead;
 
 @Service
 public class BoardServiceImpl implements BoardService {
+
+	
+	private Logger logger = LoggerFactory.getLogger(BoardServiceImpl.class);
 
 	/**
 	 * 멤버변수위에 @Autowired를 작성하면
@@ -105,7 +111,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		//게시글을 조회한 결과가 null이라면, '잘못된 접근입니다' 예외를 발생시킨다
 		if(boardVO == null) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		
 		if(isIncrease) { //isIncrease가 true라면 조회수 증가시켜라
@@ -190,7 +196,8 @@ public class BoardServiceImpl implements BoardService {
 				try {
 					excelFileInputStream = new FileInputStream(storedExcel.getRealFilePath());
 				} catch(FileNotFoundException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 				// 2.Apache poi를 활용해서 inputStream의 내용을 엑셀문서로 읽어온다
 				Workbook excelWorkbook = null;
@@ -198,7 +205,9 @@ public class BoardServiceImpl implements BoardService {
 					try {
 						excelWorkbook = new XSSFWorkbook(excelFileInputStream);
 					} catch (IOException e) {
-						e.printStackTrace();
+//						e.printStackTrace();
+						logger.error(e.getMessage(), e);
+
 					}
 				}
 				

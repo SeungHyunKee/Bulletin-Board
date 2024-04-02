@@ -2,6 +2,8 @@ package com.hello.forum.beans;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,8 @@ import jakarta.annotation.PostConstruct;
  */
 @SpringBootConfiguration
 public class CustomBeanInitializer {
+
+	private Logger logger = LoggerFactory.getLogger(CustomBeanInitializer.class);
 
 	/**
 	 * application.yml파일에 작성된 
@@ -45,13 +49,13 @@ public class CustomBeanInitializer {
 	
 	//필요한 데이터의 할당 전 이므로 생성자에서는 값들이 들어가지 않는다
 	public CustomBeanInitializer() {
-		System.out.println("CustomBeanInitializer 실행됨!!!");
+		logger.debug("CustomBeanInitializer 실행됨!!!");
 		// 아래의 값들을 보려면 생성자가 생성된 이후의 값들로 봐야됨
 		// 즉, 생성자가 실행되는 시점에서는 yml의 값이 할당되지 않는다!
 		// 생성자가 실행되고 난 이후의 시점에서 yml의 값이 할당된다!
-		System.out.println("baseDir: " + baseDir); //null
-		System.out.println("enableObfuscation: " + enableObfuscation); //false
-		System.out.println("enableObfuscationHideExt: " + enableObfuscationHideExt); //false
+		logger.debug("baseDir: " + baseDir); //null
+		logger.debug("enableObfuscation: " + enableObfuscation); //false
+		logger.debug("enableObfuscationHideExt: " + enableObfuscationHideExt); //false
 
 	}
 	

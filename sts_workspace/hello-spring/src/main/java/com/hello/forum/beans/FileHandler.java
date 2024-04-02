@@ -12,12 +12,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.hello.forum.exceptions.FileNotFouneException;
 
 import net.sf.jmimemagic.Magic;
 import net.sf.jmimemagic.MagicException;
@@ -27,6 +31,9 @@ import net.sf.jmimemagic.MagicParseException;
 
 public class FileHandler {
 
+	private Logger logger = LoggerFactory.getLogger(FileHandler.class);
+
+	
 	private String baseDir;
 	private boolean enableObfuscation;
 	private boolean enableObfuscationHideExt;
@@ -82,7 +89,7 @@ public class FileHandler {
 				try {
 					multipartFile.transferTo(storePath);
 				} catch (IllegalStateException | IOException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 					return null; //업로드에 실패했으므로 null반환
 				}
 				
@@ -95,9 +102,9 @@ public class FileHandler {
 						try {
 							mimeType = tika.detect(storePath);
 						} catch (IOException e) {
-							System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+							logger.info(mimeType + "파일은 업로드 할 수 없습니다.");
 							storePath.delete();
-							e.printStackTrace();
+							logger.error(e.getMessage(), e);
 							return null;
 						}
 					}
@@ -109,18 +116,18 @@ public class FileHandler {
 							MagicMatch match = Magic.getMagicMatch(data);
 							mimeType = match.getMimeType();
 						} catch (IOException | MagicParseException | MagicMatchNotFoundException | MagicException e) {
-							System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+							logger.info(mimeType + "파일은 업로드 할 수 없습니다.");
 							storePath.delete();
 							e.printStackTrace();
 							return null;				}
 					}
 					if(! this.availableFileList.contains(mimeType)) {
 						storePath.delete();
-						System.out.println(mimeType + "파일은 업로드 할 수 없습니다.");
+						logger.info(mimeType + "파일은 업로드 할 수 없습니다.");
 						storePath.delete();
 						return null;
 					}
-					System.out.println(mimeType + "파일은 업로드 했습니다.");
+					logger.info(mimeType + "파일은 업로드 했습니다.");
 				}
 				//업로드 결과를 반환한다.(여기까지 왔다는건 업로드 성공했다는것)
 				return new StoredFile(multipartFile.getOriginalFilename(), storePath); 
@@ -241,7 +248,7 @@ public class FileHandler {
 			resource = new InputStreamResource(new FileInputStream(downloadFile));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			throw new IllegalArgumentException("파일이 존재하지 않습니다.");
+			throw new FileNotFouneException();
 		}
 		
 		// 4. 사용자에게 다운로드 해준다

@@ -11,6 +11,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,8 @@ import com.hello.forum.bbs.service.BoardService;
 import com.hello.forum.bbs.vo.BoardListVO;
 import com.hello.forum.bbs.vo.BoardVO;
 import com.hello.forum.beans.FileHandler;
+import com.hello.forum.exceptions.MakeXlsxFileException;
+import com.hello.forum.exceptions.PageNotFoundException;
 import com.hello.forum.member.vo.MemberVO;
 import com.hello.forum.utils.AjaxResponse;
 import com.hello.forum.utils.ValidationUtils;
@@ -41,6 +45,7 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class BoardControllerr {
 
+	private Logger logger = LoggerFactory.getLogger(BoardControllerr.class);
 	/*
 	 * 파일다운로드를 위해, fileHandler을 이용하기위해 멤버변수 선언
 	 */
@@ -134,7 +139,7 @@ public class BoardControllerr {
 		- Interceptor에서 이용
 		- Filter 에서 이용
 		*/
-		System.out.println("글등록 처리를 해야됩니다.");
+		logger.info("글등록 처리를 해야됩니다.");
 //		String subject = request.getParameter("subject");
 //		String email = request.getParameter("email");
 //		String content = request.getParameter("content");
@@ -180,10 +185,10 @@ public class BoardControllerr {
 		
 		boolean isCreateSuccess = this.boardService.createNewBoard(boardVO, file);
 		if (isCreateSuccess) {
-			System.out.println("글 등록 성공!");
+			logger.info("글 등록 성공!");
 		}
 		else {
-			System.out.println("글 등록 실패!");
+			logger.info("글 등록 실패!");
 		}
 		
 		// board/boardlist페이지를 보여주는 URL로 이동처리.
@@ -222,7 +227,7 @@ public class BoardControllerr {
 		BoardVO boardVO = this.boardService.getOneBoard(id, false);
 		
 		if (!memberVO.getEmail().equals(boardVO.getEmail())) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		//2. 게시글의 정보를 화면에 보내준다
 		model.addAttribute("boardVO", boardVO);
@@ -246,7 +251,7 @@ public class BoardControllerr {
 		BoardVO originalBoardVO = this.boardService.getOneBoard(id, false);
 		
 		if (!originalBoardVO.getEmail().equals(memberVO.getEmail())) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		
 		//수동검사 시작 (체크해야하는 파라미터 개수만큼 적어줌)
@@ -277,10 +282,10 @@ public class BoardControllerr {
 		boolean isUpdatedSuccess = this.boardService.updateOneBoard(boardVO, file);
 		
 		if(isUpdatedSuccess) {
-			System.out.println("수정에 성공했습니다!");
+			logger.info("수정에 성공했습니다!");
 		}
 		else {
-			System.out.println("수정 실패했습니다!");
+			logger.info("수정 실패했습니다!");
 		}
 		
 		return "redirect:/board/view?id=" + id; //게시글 내용보기 페이지로 이동시킴
@@ -311,15 +316,15 @@ public class BoardControllerr {
 		
 		BoardVO originalBoardVO = this.boardService.getOneBoard(id, false);
 		if (!originalBoardVO.getEmail().equals(memberVO.getEmail())) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		
 		//삭제 요청
 		boolean isDeletedSuccess = this.boardService.deleteOneBoard(id);
 		if (isDeletedSuccess) {
-			System.out.println("게시글 삭제 성공.");
+			logger.info("게시글 삭제 성공.");
 		}else {
-			System.out.println("게시글 삭제 실패.");
+			logger.info("게시글 삭제 실패.");
 		}
 		
 		//게시글 목록으로 이동
@@ -335,12 +340,12 @@ public class BoardControllerr {
 		
 		//만약, 게시글이 존재하지 않다면 "잘못된 접근입니다" 라는 에러를 사용자에게 보여준다
 		if (boardVO == null) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		
 		//첨부된 파일이 없을경우에도 "잘못된 접근입니다" 라는 에러를 사용자에게 보여준다
 		if ( boardVO.getFileName()==null || boardVO.getFileName().length()==0) {
-			throw new IllegalArgumentException("잘못된 접근입니다.");
+			throw new PageNotFoundException();
 		}
 		
 		//첨부된파일이 있을경우엔 파일을 사용자에게 보내준다(Download)
@@ -433,7 +438,7 @@ public class BoardControllerr {
 			os = new FileOutputStream(storedFile);
 			workbook.write(os);
 		}catch (IOException e) {
-			throw new IllegalArgumentException("엑셀파일을 만들수 없습니다.");
+			throw new MakeXlsxFileException();
 		} finally {
 			try {
 				workbook.close();

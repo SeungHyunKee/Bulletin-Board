@@ -1,5 +1,7 @@
 package com.hello.forum.beans;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.hello.forum.member.vo.MemberVO;
@@ -11,6 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 public class CheckSessionInterceptor implements HandlerInterceptor{
+
+	private Logger logger = LoggerFactory.getLogger(CheckSessionInterceptor.class);
 
 	
 	//preHandle : controller가 실행되기 전에 가로채는것
@@ -40,10 +44,10 @@ public class CheckSessionInterceptor implements HandlerInterceptor{
 			String queryString = request.getQueryString();
 			
 			//콘솔에는 로그인 안했을때만 아래정보 찍히게 될 것
-			System.out.println("HttpMethod: " + httpMethod );
-			System.out.println("uri: " + uri );
+			logger.debug("HttpMethod: " + httpMethod );
+			logger.debug("uri: " + uri );
 //			System.out.println("url: " + url );
-			System.out.println("queryString: " + queryString );
+			logger.debug("queryString: " + queryString );
 
 			if (httpMethod.equals("get")) {
 				

@@ -1,10 +1,14 @@
 package com.hello.forum.sample.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import com.hello.forum.beans.CheckSessionInterceptor;
 
 /*
  * Servlet: HelloBootServlet.java
@@ -20,10 +24,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HelloBootController {
 	
+	
+	private Logger logger = LoggerFactory.getLogger(HelloBootController.class);
+
 	public HelloBootController() {
 		// Spring이 호출한다!, 즉, 생성된객체를 Bean Cotainer에 보관한다
-		System.out.println("HelloBootControlelr() 호출됨.");
-		System.out.println(this);
+		logger.info("HelloBootControlelr() 호출됨.");
+		logger.info(this.toString());
 	}
 	
 	// GetMapping의 역할 = doGet(); => 브라우저와 서버가 통신(데이터를 주고받는)할수있는 end-point == controller

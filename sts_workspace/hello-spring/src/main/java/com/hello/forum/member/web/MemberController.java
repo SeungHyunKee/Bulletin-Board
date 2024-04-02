@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.hello.forum.bbs.web.BoardControllerr;
 import com.hello.forum.member.service.MemberService;
 import com.hello.forum.member.vo.MemberVO;
 import com.hello.forum.utils.AjaxResponse;
@@ -28,6 +31,9 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class MemberController {
 
+	private Logger logger = LoggerFactory.getLogger(MemberController.class);
+
+	
 	@Autowired
 	private MemberService memberService;
 	
@@ -120,10 +126,10 @@ public class MemberController {
 			
 			boolean isSuccess = this.memberService.createNewMember(memberVO);
 			if (isSuccess) {
-				System.out.println("회원 가입 성공!");
+				logger.info("회원 가입 성공!");
 			}
 			else {
-				System.out.println("회원 가입 실패!");
+				logger.info("회원 가입 실패!");
 			}
 			return "redirect:/member/login";
 		}
@@ -137,7 +143,7 @@ public class MemberController {
 		@PostMapping("/member/login")
 		public AjaxResponse doLogin(MemberVO memberVO, HttpSession session,
 									@RequestParam(defaultValue = "/board/list") String nextUrl){ // session:상태를 기억하게하는 객체
-			System.out.println("nextUrl: " + nextUrl);
+			logger.info("nextUrl: " + nextUrl);
 			
 			//Validation Check (파라미터 유효성 검사) -> 패턴지정해주고, 마지막에 start() 하면 유효셩검사 싹 해주고 검사를 받아올 수 있다
 			Validator<MemberVO> validator = new Validator<>(memberVO);
