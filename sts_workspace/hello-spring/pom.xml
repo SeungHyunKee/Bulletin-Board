@@ -19,6 +19,24 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-aop</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<!--<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-web</artifactId>
+		</dependency>-->
+
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<!--객체를 JSON으로 변환, JSON을 객체로 변환시켜주는 라이브러리 -->
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		</dependency>
 		
 		<!-- excel을 읽고쓰기위한 라이브러리 3개 - poi-->
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->

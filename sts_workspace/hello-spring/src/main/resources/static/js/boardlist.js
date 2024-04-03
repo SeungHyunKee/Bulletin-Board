@@ -24,7 +24,7 @@ $().ready(function () {
     //파일전송은 $.post로 할 수 없다.
     // short hand가 아닌, 전체문장을 써야된다
     $.ajax({
-      url: "/board/excel/write", //요청을 보낼 주소
+      url: "/ajax/board/excel/write", //요청을 보낼 주소
       type: "POST", //요청을 보낼 httpMethod
       data: formData, //요청을 보낼 데이터 (formData)
       processData: false,

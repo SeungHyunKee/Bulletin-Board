@@ -4,7 +4,7 @@ $().ready(function () {
     $("div.grid").removeAttr("style");
 
     $.post(
-      "/member/login",
+      "/ajax/member/login",
       {
         email: $("#email").val(),
         password: $("#password").val(),

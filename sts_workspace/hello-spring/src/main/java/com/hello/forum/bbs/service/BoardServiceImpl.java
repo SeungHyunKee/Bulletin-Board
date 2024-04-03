@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hello.forum.bbs.dao.BoardDao;
@@ -82,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardListVO;
 	}
 
-
+	@Transactional
 	@Override
 	public boolean createNewBoard(BoardVO boardVO, MultipartFile file) {
 		
@@ -100,10 +101,14 @@ public class BoardServiceImpl implements BoardService {
 		}
 		
 		int insertedCount = this.boardDao.insertNewBoard(boardVO);
+		
+		//NumberFormatException이 발생하면, rollback된다! (String AOP가 처리해 줌)
+//		Integer.parseInt("qwertyuiop"); // <-- 강제로 예외 발생시키기
+		
 		return insertedCount > 0;
 	}
 
-
+	@Transactional
 	@Override
 	public BoardVO getOneBoard(int id, boolean isIncrease) {
 		//1.게시글 정보 조회하기
@@ -127,7 +132,7 @@ public class BoardServiceImpl implements BoardService {
 		return boardVO;
 	}
 
-
+	@Transactional
 	@Override
 	public boolean updateOneBoard(BoardVO boardVO, MultipartFile file) {
 		
@@ -158,7 +163,7 @@ public class BoardServiceImpl implements BoardService {
 		return updatedCount > 0; //updatedCount > 0 이라면 성공이다
 	}
 
-
+	@Transactional
 	@Override
 	public boolean deleteOneBoard(int id) {
 		//기존의 게시글내용 확인 
@@ -179,7 +184,7 @@ public class BoardServiceImpl implements BoardService {
 		return deletedCount > 0;
 	}
 
-
+	@Transactional
 	@Override
 	public boolean createMassiveBoard(MultipartFile excelFile) {
 
@@ -256,6 +261,7 @@ public class BoardServiceImpl implements BoardService {
 	/**
 	 * 더 간단하게 엑셀파일을 읽는 방법
 	 */
+	@Transactional
 	@Override
 	public boolean createMassiveBoard2(MultipartFile excelFile) {
 

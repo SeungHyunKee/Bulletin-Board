@@ -75,7 +75,8 @@ public class WebConfig implements WebMvcConfigurer{
 				.addPathPatterns(this.authCheckUrlPattern)
 				.excludePathPatterns(this.authCheckIgnoreUrlPatterns);
 		registry.addInterceptor(new BlockDuplicateLoginInterceptor())
-				.addPathPatterns("/member/login", "/member/regist");
+				.addPathPatterns("/ajax/member/login", "/ajax/member/regist", 
+								"/member/regist", "ajax/member/regist"); //로그인 이후에 이 페이지로 접근하지 못하도록 하는 기능
 		
 	}
 }

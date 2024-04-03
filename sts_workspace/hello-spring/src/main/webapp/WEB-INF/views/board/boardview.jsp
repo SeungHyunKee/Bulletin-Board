@@ -13,7 +13,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       div.grid {
         display: grid;
         grid-template-columns: 80px 1fr;
-        grid-template-rows: repeat(7, 28px) 320px 1fr;
+        grid-template-rows: repeat(7, 28px) 320px 1fr 1fr;
         row-gap: 10px;
       }
     </style>
@@ -38,6 +38,81 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       };
     </script> -->
     <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.1.min.js"></script>-->
+    <!-- <script type="text/javascript" src="/js/boardview.js"></script> -->
+    <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.0.js"></script>
+    <script type="text/javascript">
+                $().ready(function() {
+                  var modifyReply = function(event) {
+                  var reply = $(event.currentTarget).closest(".reply");
+                  var replyId = reply.data("reply-id");
+
+                  var content = reply.find(".content").text();
+                  $("#txt-reply").val(content);
+                  $("#txt-reply").focus();
+
+                  $("#txt-reply").data("mode", "modify");
+                  $("#txt-reply").data("target", replyId);
+                }
+
+              var deleteReply = function(event) {
+              var reply = $(event.currentTarget).closest(".reply");
+              var replyId = reply.data("reply-id");
+
+              $("#txt-reply").removeData("mode");
+              $("#txt-reply").removeData("target");
+
+              if (confirm("댓글을 삭제하시겠습니까?")) {
+              $.get(`/board/reply/delete/\${replyId}`, function(response) {
+              var result = response.result;
+              if (result) {
+                loadReplies();
+                ("#txt-reply").val("");
+                }
+            });
+            }
+          }
+          var reReply = function(event) {
+          var reply = $(event.currentTarget).closest(".reply");
+          var replyId = reply.data("reply-id");
+
+          $("#txt-reply").data("mode", "re-reply");
+          $("#txt-reply").data("target", replyId);
+          $("#txt-reply").focus();
+        }
+
+            var recommendReply = function(event) {
+          var reply = $(event.currentTarget).closest(".reply");
+          var replyId = reply.data("reply-id");
+        $("#txt-reply").removeData("mode");
+        $("#txt-reply").removeData("target");
+
+          $.get(`/board/reply/recommend/\${replyId}`, function(response) {
+            var result = response.result;
+            console.log(result)
+          if (result) {
+            loadReplies();
+            $("#txt-reply").val("");
+            }
+        });
+        }
+
+        // 댓글 조회하기.
+        var loadReplies = function() {
+            $(".reply-items").html("");
+          $.get("/board/reply/${boardVO.id}", function(response) {
+            var replies = response.replies;
+            for (var i = 0; i < replies.length; i++) {
+              var reply = replies[i];
+              var replyTemplate =
+        div class="reply"  ???
+
+
+
+      }
+                  }
+                }
+              } 
+    </script>-->
     <script type="text/javascript" src="/js/boardview.js"></script>
   </head>
   <body>
@@ -68,6 +143,16 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
       <label for="content">내용</label>
       <div>${boardVO.content}</div>
+
+      <div class="replies">
+        <div class="reply-items"></div>
+        <div class="write-reply">
+          <textarea id="txt-reply"></textarea>
+          <button id="btn-save-reply">등록</button>
+          <button id="btn-save-reply">취소</button>
+        </div>
+      </div>
+
       <c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
         <div class="btn-group">
           <div class="right-align">

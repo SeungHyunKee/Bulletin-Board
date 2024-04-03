@@ -463,7 +463,7 @@ public class BoardControllerr {
 	}
 	
 	@ResponseBody // ajax쓸때 붙여야됨(ajax로 요청처리를 전부 할 것이므로)
-	@PostMapping("/board/excel/write")
+	@PostMapping("/ajax/board/excel/write")
 	public AjaxResponse doExcelUpload(@RequestParam MultipartFile excelFile) {
 		
 //		boolean isSuccess = this.boardService.createMassiveBoard(excelFile);

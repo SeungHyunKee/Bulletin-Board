@@ -83,7 +83,7 @@ pageEncoding="UTF-8"%>
 
           $("#email").on("keyup", function(){
             //서버에게 사용할 수 있는 이메일인지 확인받는다
-            $.get("/member/regist/available", {"email":$(this).val()}, function(response){
+            $.get("/ajax/member/regist/available", {"email":$(this).val()}, function(response){
               var available = response.available;
               if(available){
                 $("#email").addClass("available"); //동적으로 클래스가 할당됨

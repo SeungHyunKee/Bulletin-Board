@@ -44,7 +44,7 @@ public class MemberController {
 	
 	@ResponseBody //응답하는 데이터를 JSON으로 변환해 클라이언트에게 반환한다.
 	// 화면에서 호출하는 방법 : http://localhost:8080/member/regist/available?email=aaa@aaa.com
-	@GetMapping("/member/regist/available")//<- 이 주소에 의해 아래 코드가 실행되고, @RequestParam에는 email이 전달됨
+	@GetMapping("/ajax/member/regist/available")//<- 이 주소에 의해 아래 코드가 실행되고, @RequestParam에는 email이 전달됨
 	// 사용자가 입력하는 정보가 들어옴
 	public Map<String, Object> checkAvailableEmail(@RequestParam String email){
 		
@@ -140,7 +140,7 @@ public class MemberController {
 		}
 		
 		@ResponseBody //AJAX반환시키기 위해서 붙이는 annotation
-		@PostMapping("/member/login")
+		@PostMapping("/ajax/member/login")
 		public AjaxResponse doLogin(MemberVO memberVO, HttpSession session,
 									@RequestParam(defaultValue = "/board/list") String nextUrl){ // session:상태를 기억하게하는 객체
 			logger.info("nextUrl: " + nextUrl);
@@ -158,15 +158,15 @@ public class MemberController {
 			}
 			
 			
-			try {
+//			try {
 				MemberVO member = this.memberService.getMember(memberVO);
 				//로그인이 정상적으로 이루어졌다면 세션을 생성한다
 				session.setAttribute("_LOGIN_USER_", member);
 				session.setMaxInactiveInterval(20 * 60); //세션이 유지될 수 있는 시간을 지정할수있다(default : 30분)
-			}catch(IllegalArgumentException iae) {
+//			}catch(IllegalArgumentException iae) {
 				//로그인이 실패했다면 화면으로 실패사유를 보내준다.
-				return new AjaxResponse().append("errorMessage", iae.getMessage());
-			}
+//				return new AjaxResponse().append("errorMessage", iae.getMessage());
+//			}
 			
 			return new AjaxResponse().append("next", nextUrl);
 		}
@@ -183,7 +183,7 @@ public class MemberController {
 		
 		//탈퇴처리
 		@ResponseBody //JSON으로 응답받기 위한 annotation
-		@GetMapping("/member/delete-me")
+		@GetMapping("/ajax/member/delete-me")
 		public AjaxResponse doDeleteMe(HttpSession session, 
 				@SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
 			//현재 로그인되어있는 사용자의 정보
