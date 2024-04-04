@@ -19,7 +19,7 @@ public class BlockDuplicateLoginInterceptor implements HandlerInterceptor {
 		MemberVO memberVO = (MemberVO) session.getAttribute("_LOGIN_USER_");
 		
 		if(memberVO != null) { //즉, 로그인을 했다면
-			response.sendRedirect("/board/list");
+			response.sendRedirect("/board/search");
 			return false;
 		}
 		

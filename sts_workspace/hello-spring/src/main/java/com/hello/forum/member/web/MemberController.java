@@ -142,7 +142,7 @@ public class MemberController {
 		@ResponseBody //AJAX반환시키기 위해서 붙이는 annotation
 		@PostMapping("/ajax/member/login")
 		public AjaxResponse doLogin(MemberVO memberVO, HttpSession session,
-									@RequestParam(defaultValue = "/board/list") String nextUrl){ // session:상태를 기억하게하는 객체
+									@RequestParam(defaultValue = "/board/search") String nextUrl){ // session:상태를 기억하게하는 객체
 			logger.info("nextUrl: " + nextUrl);
 			
 			//Validation Check (파라미터 유효성 검사) -> 패턴지정해주고, 마지막에 start() 하면 유효셩검사 싹 해주고 검사를 받아올 수 있다
@@ -177,7 +177,7 @@ public class MemberController {
 			//Logout 처리
 			//SessionID로 전달된 세션의 모든 정보를 삭제
 			session.invalidate();
-			return "redirect:/board/list";
+			return "redirect:/board/search";
 		}
 		
 		

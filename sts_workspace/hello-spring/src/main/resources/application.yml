@@ -36,7 +36,7 @@ app:
             /ajax/member/regist/**,
             /member/success-delete-me,
             /member/fail-delete-me,
-            /board/list,
+            /board/search,
             /js/**,
             /css/**,
             /error/**

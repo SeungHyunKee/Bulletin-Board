@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hello.forum.bbs.dao.BoardDao;
 import com.hello.forum.bbs.vo.BoardListVO;
 import com.hello.forum.bbs.vo.BoardVO;
+import com.hello.forum.bbs.vo.SearchBoardVO;
 import com.hello.forum.beans.FileHandler;
 import com.hello.forum.beans.FileHandler.StoredFile;
 import com.hello.forum.exceptions.PageNotFoundException;
@@ -83,6 +84,20 @@ public class BoardServiceImpl implements BoardService {
 		return boardListVO;
 	}
 
+	@Override
+	public BoardListVO searchAllBoard(SearchBoardVO searchBoardVO) {
+		int boardCount = this.boardDao.getBoardAllCount();
+		searchBoardVO.setPageCount(boardCount); //setpagecount를 넣어줘야 페이지의 수를 계산해서 넣어줌
+
+		List<BoardVO> boardList = this.boardDao.searchAllBoard(searchBoardVO);
+		
+		BoardListVO boardListVO = new BoardListVO();
+		boardListVO.setBoardCnt(boardCount);
+		boardListVO.setBoardList(boardList);
+		
+		return boardListVO;
+	}
+	
 	@Transactional
 	@Override
 	public boolean createNewBoard(BoardVO boardVO, MultipartFile file) {
@@ -290,5 +305,7 @@ public class BoardServiceImpl implements BoardService {
 		// 한건이상 insert했고, 엑셀파일의 row개수와 insert한 row개수가 같다면 성공했다고 보는 것.
 		return insertedCount > 0 && insertedCount == rowSize;
 	}
+
+	
 
 }

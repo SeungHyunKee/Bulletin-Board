@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hello.forum.bbs.vo.BoardVO;
+import com.hello.forum.bbs.vo.SearchBoardVO;
 
 /**
  * DB에 쿼리를 전송 및 실행하고 결과를 받아오는 클래스.
@@ -54,7 +55,11 @@ public class BoardDaoImpl extends SqlSessionDaoSupport implements BoardDao {
 		return getSqlSession().selectList(BoardDao.NAME_SPACE + ".getAllBoard");
 	}
 
-
+	@Override
+	public List<BoardVO> searchAllBoard(SearchBoardVO searchBoardVO) {
+		return getSqlSession().selectList(
+				BoardDao.NAME_SPACE + ".searchAllBoard", searchBoardVO);
+	}
 
 	@Override
 	public int insertNewBoard(BoardVO boardVO) {

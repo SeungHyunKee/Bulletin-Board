@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(PageNotFoundException.class)
 	public Object viewPageNotFoundPage(PageNotFoundException pnfe, Model model) {
-		pnfe.printStackTrace();
+
 		
 		logger.error(pnfe.getMessage(), pnfe);
 		
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
 		MakeXlsxFileException.class, AlreadyUseException.class,
 		UserIdentifyNotMatchException.class, RuntimeException.class}) //예외페이지는 error.500페이지가 보이게 될것
 	public Object viewErrorPage(RuntimeException re, Model model) {
-		
+		logger.error(re.getMessage(), re);
 		HttpServletRequest request = RequestUtil.getRequest();
 		String uri = request.getRequestURI(); //현재 요청된 주소
 		

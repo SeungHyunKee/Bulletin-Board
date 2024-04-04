@@ -17,102 +17,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         row-gap: 10px;
       }
     </style>
-    <!-- <script type="text/javascript">
-      //1.페이지 렌더링이 모두 끝났을 때
-      window.onload = function () {
-        // 삭제 링크를 클릭하면
-        var deleteAnchor = document.querySelector(".delete-board");
-        deleteAnchor.addEventListener("click", function () {
-          // 사용자에게 진짜 삭제할 것인지? 물어보고
-          var chooseValue = confirm(
-            "이 게시글을 정말 삭제하시겠습니까?\n삭제작업은 복구할수 없습니다."
-          );
-          //chooseValue가 true라면 "확인" 클릭
-          //chooseValue가 false라면 '취소' 클릭
-          // 삭제를 하려한다면 : 삭제처리
-          // 그렇지않다면 : 아무일도 하지 않는다
-          if (chooseValue) {
-            location.href = "/board/delete/${boardVO.id}";
-          }
-        });
-      };
-    </script> -->
-    <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.1.min.js"></script>-->
-    <!-- <script type="text/javascript" src="/js/boardview.js"></script> -->
-    <!-- <script type="text/javascript" src="/js/lib/jquery-3.7.0.js"></script>
-    <script type="text/javascript">
-                $().ready(function() {
-                  var modifyReply = function(event) {
-                  var reply = $(event.currentTarget).closest(".reply");
-                  var replyId = reply.data("reply-id");
 
-                  var content = reply.find(".content").text();
-                  $("#txt-reply").val(content);
-                  $("#txt-reply").focus();
-
-                  $("#txt-reply").data("mode", "modify");
-                  $("#txt-reply").data("target", replyId);
-                }
-
-              var deleteReply = function(event) {
-              var reply = $(event.currentTarget).closest(".reply");
-              var replyId = reply.data("reply-id");
-
-              $("#txt-reply").removeData("mode");
-              $("#txt-reply").removeData("target");
-
-              if (confirm("댓글을 삭제하시겠습니까?")) {
-              $.get(`/board/reply/delete/\${replyId}`, function(response) {
-              var result = response.result;
-              if (result) {
-                loadReplies();
-                ("#txt-reply").val("");
-                }
-            });
-            }
-          }
-          var reReply = function(event) {
-          var reply = $(event.currentTarget).closest(".reply");
-          var replyId = reply.data("reply-id");
-
-          $("#txt-reply").data("mode", "re-reply");
-          $("#txt-reply").data("target", replyId);
-          $("#txt-reply").focus();
-        }
-
-            var recommendReply = function(event) {
-          var reply = $(event.currentTarget).closest(".reply");
-          var replyId = reply.data("reply-id");
-        $("#txt-reply").removeData("mode");
-        $("#txt-reply").removeData("target");
-
-          $.get(`/board/reply/recommend/\${replyId}`, function(response) {
-            var result = response.result;
-            console.log(result)
-          if (result) {
-            loadReplies();
-            $("#txt-reply").val("");
-            }
-        });
-        }
-
-        // 댓글 조회하기.
-        var loadReplies = function() {
-            $(".reply-items").html("");
-          $.get("/board/reply/${boardVO.id}", function(response) {
-            var replies = response.replies;
-            for (var i = 0; i < replies.length; i++) {
-              var reply = replies[i];
-              var replyTemplate =
-        div class="reply"  ???
-
-
-
-      }
-                  }
-                }
-              } 
-    </script>-->
     <script type="text/javascript" src="/js/boardview.js"></script>
   </head>
   <body>
@@ -153,7 +58,18 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         </div>
       </div>
 
+      <div class="btn-group">
+        <c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
+          <div class="right-align">
+            <a href="/board/modify/${boardVO.id}">수정</a>
+            <a href="/board/delete/${boardVO.id}">삭제</a>
+          </div>
+        </c:if>
+      </div>
+
+      <!--JSP 페이지에서 로그인한 사용자와 게시글의 작성자가 동일한 경우에만 수정과 삭제 링크를 표시-->
       <c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
+        <!--세션에 저장된 현재 로그인한 사용자의 이메일 == 해당 게시글의 작성자의 이메일 이라면, -->
         <div class="btn-group">
           <div class="right-align">
             <a href="/board/modify/${boardVO.id}">수정</a>
@@ -164,6 +80,7 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
             javascript:void(0); 이 코드는 anchor태그의 링크이동을 무시한다.
           -->
             <a class="delete-board" href="javascript:void(0);">삭제</a>
+            <!--이 링크를 클릭했을 때 JavaScript를 이용한 이벤트만 처리하고 실제로는 어떤 페이지로 이동하지 않도록 -->
           </div>
         </div>
       </c:if>

@@ -12,6 +12,7 @@
                 javaType="com.hello.forum.member.vo.MemberVO">
             <id column="EMAIL" property="email" />
             <result column="NAME" property="name" />
+            <result column="M_DEL_YN" property="delYn" />
         </association>
     </resultMap>
 
@@ -23,11 +24,13 @@
              , R.BOARD_ID
              , R.EMAIL
              , R.CONTENT
-             , R.CRT_DT
-             , R.MDFY_DT
+             , TO_CHAR(R.CRT_DT, 'YYYY-MM-DD') CRT_DT
+             , TO_CHAR(R.MDFY_DT, 'YYYY-MM-DD') MDFY_DT
              , R.RECOMMEND_CNT
              , R.PARENT_REPLY_ID
+             , R.DEL_YN
              , M.NAME
+             , M.DEL_YN M_DEL_YN
           FROM REPLIES R
          INNER JOIN BOARD B
             ON R.BOARD_ID = B.ID
@@ -86,13 +89,13 @@
           parameterType="_int">
       UPDATE REPLIES
          SET DEL_YN = 'Y'
-       WHERE REPLY_ID = #{_parameter}
+       WHERE REPLY_ID = #{_parameter}
      </update>
 
      <update id = "modifyOneReply" parameterType = "com.hello.forum.bbs.vo.ReplyVO">
      UPDATE REPLIES
-        SET CONTENT = #{CONTENT}
-       MDFY_DT = SYSDATE
+        SET CONTENT = #{content}
+          , MDFY_DT = SYSDATE
       WHERE REPLY_ID = #{replyId}
      </update>
 
