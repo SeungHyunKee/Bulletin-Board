@@ -1,4 +1,18 @@
 $().ready(function () {
+  // ex) 6페이지 보다가 10,20,30,50,100 값 바뀌면 1페이지로 돌아가는 기능 구현을 위함
+  $("#list-size").on("change", function () {
+    search(0);
+  });
+
+  //검색버튼이 click되면 함수를 수행하라는 것
+  $("#search-btn").on("click", function () {
+    search(0);
+  });
+
+  $("#cancel-search-btn").on("click", function () {
+    location.href = "/board/search";
+  });
+
   $("#uploadExcelfile").on("click", function () {
     $("#excelfile").click();
   });

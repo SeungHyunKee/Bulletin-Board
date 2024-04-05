@@ -86,7 +86,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public BoardListVO searchAllBoard(SearchBoardVO searchBoardVO) {
-		int boardCount = this.boardDao.getBoardAllCount();
+		int boardCount = this.boardDao.searchBoardAllCount(searchBoardVO);
 		searchBoardVO.setPageCount(boardCount); //setpagecount를 넣어줘야 페이지의 수를 계산해서 넣어줌
 
 		List<BoardVO> boardList = this.boardDao.searchAllBoard(searchBoardVO);

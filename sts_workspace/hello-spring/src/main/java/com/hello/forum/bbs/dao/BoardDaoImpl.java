@@ -54,6 +54,11 @@ public class BoardDaoImpl extends SqlSessionDaoSupport implements BoardDao {
 	public List<BoardVO> getAllBoard() {
 		return getSqlSession().selectList(BoardDao.NAME_SPACE + ".getAllBoard");
 	}
+	
+	@Override
+	public int searchBoardAllCount(SearchBoardVO searchBoardVO) {
+		return getSqlSession().selectOne(BoardDao.NAME_SPACE + ".searchBoardAllCount", searchBoardVO);
+	}
 
 	@Override
 	public List<BoardVO> searchAllBoard(SearchBoardVO searchBoardVO) {

@@ -94,23 +94,72 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
       <!-- Paginator 시작-->
       <div>
-        <div>
+        <form id="search-form">
+          <!-- value=0 은 아무것도 안치고 엔터눌렀을때 에러나는것을 방지하는 하는 역할-->
+          <input type="hidden" id="page-no" name="pageNo" value="0"/>
+          <select id="list-size" name="listSize">
+            <option value="10" ${searchBoardVO.listSize eq 10 ? 'selected' : ''}>10개</option>
+            <option value="20" ${searchBoardVO.listSize eq 20 ? 'selected' : ''}>20개</option>
+            <option value="30" ${searchBoardVO.listSize eq 30 ? 'selected' : ''}>30개</option>
+            <option value="50" ${searchBoardVO.listSize eq 50 ? 'selected' : ''}>50개</option>
+            <option value="100" ${searchBoardVO.listSize eq 100 ? 'selected' : ''}>100개</option>
+          </select>
+
+          <!--검색하는 타입을 만들어줌-->
+          <select id="search-type" name="searchType">
+            <option value="title" ${searchBoardVO.searchType eq 'title' ? 'selected' : ''}>제목</option>
+            <option value="content" ${searchBoardVO.searchType eq 'content' ? 'selected' : ''}>내용</option>
+            <option value="title_content" ${searchBoardVO.searchType eq 'title_content' ? 'selected' : ''}>제목 + 내용</option>
+            <option value="email" ${searchBoardVO.searchType eq 'email' ? 'selected' : ''}>작성자</option>
+          </select>
+
+          <input type="text" name="searchKeyword" value="${searchBoardVO.searchKeyword}"/>
+          <button type="button" id="search-btn">검색</button>
+          <button type="button" id="cancel-search-btn">초기화</button>
+
+
           <ul class="page-nav">
+            <c:if test="${searchBoardVO.hasPrevGroup}">
+              <!-- '처음'을 클릭하면, javascript에 있는 search함수에 0을 파라미터로 전달해서 form을 전송시킴 -->
+              <li><a href="javascript:search(0);">처음</a></li>
+              <li>
+                <a
+                  href="javascript:search(${searchBoardVO.prevGroupStartPageNo});"
+                  >이전</a
+                >
+              </li>
+            </c:if>
+
             <!--page번호를 반복하여 노출한다.-->
             <c:forEach
-              begin="1"
-              end="${searchBoardVO.pageCount}"
+              begin="${searchBoardVO.groupStartPageNo}"
+              end="${searchBoardVO.groupEndPageNo}"
               step="1"
               var="p"
             >
-              <!--페이지번호(pageNo) 는 항상 0부터 시작함-->
-              <li class="${searchBoardVO.pageNo eq p-1 ? 'active' : ''}">
-                <!--p와 누른페이지번호가 같다면 active줘라-->
-                <a href="/board/search?pageNo=${p-1}&listSize=10">${p}</a>
+              <!--페이지번호(pageNo) 는 항상 0부터 시작 -->
+              <li class="${searchBoardVO.pageNo eq p ? 'active' : ''}">
+                <!--p와 누른페이지번호가 같다면 active줘라. 노출되는것은 1부터 시작하므로 +1 해줌-->
+                <!-- p를 넣어서 search함수를 호출한다 -->
+                <a href="javascript:search(${p});">${p+1}</a>
               </li>
             </c:forEach>
+
+            <c:if test="${searchBoardVO.hasNextGroup}">
+              <li>
+                <a
+                  href="javascript:search(${searchBoardVO.nextGroupStartPageNo});"
+                  >다음</a
+                >
+              </li>
+              <li>
+                <a href="javascript:search(${searchBoardVO.pageCount - 1});"
+                  >마지막</a
+                >
+              </li>
+            </c:if>
           </ul>
-        </div>
+        </form>
       </div>
 
       <!-- Paginator 끝-->

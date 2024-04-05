@@ -1,4 +1,23 @@
 $().ready(function () {
+  $(document).on("scroll", function () {
+    console.log("스크롤함!!!");
+
+    var scrollHeight = $(window).scrollTop();
+    // console.log("스크롤 위치" + scrollHeight);
+    var documentHeight = $(document).height();
+    // console.log("문서내용의 높이" + documentHeight);
+    var browserHeight = $(window).height();
+    // console.log("브라우저의 높이" + browserHeight);
+    var scrollBottomPoint = scrollHeight + browserHeight + 30;
+    // console.log("스크롤바 밑 부분의 위치: " + scrollBottomPoint);
+
+    // 스크롤바가 문서의 끝까지 왔다고 판단 될 때, 댓글을 더 불러올지 선택할 수 있도록 함
+    var willFetchReply = scrollBottomPoint > documentHeight;
+    if (willFetchReply) {
+      // console.log("댓글을 10개만 더 불러옵니다.");
+    }
+  });
+
   $(".delete-board").on("click", function () {
     var chooseValue = confirm(
       "이 게시글을 정말 삭제하시겠습니까? \n삭제작업은 복구할수 없습니다."
@@ -94,10 +113,19 @@ $().ready(function () {
     });
   };
 
-  var loadReplies = function (boardId) {
+  var loadReplies = function (boardId, pageNo) {
+    var isNotUndefinedPageNo = pageNo !== undefined; // pageNo가 전달되었는지 아닌지 판단(undefined라면 파라미터인 pageNo안보내줌)
+    var params = { pageNo: -1 }; // -1일때는 값을 전부 다 불러옴, 전달되는 pageNo의 값을 보고 pagination을 할지말지 결정하는것
+    if (isNotUndefinedPageNo) {
+      params.pageNo = pageNo;
+    }
+
     $(".reply-items").html("");
 
-    $.get("/ajax/board/reply/" + boardId, function (response) {
+    $.get("/ajax/board/reply/" + boardId, params, function (response) {
+      if (!isNotUndefinedPageNo) {
+        $(".reply-items").html(""); //댓글더불러올때 삭제되면 안되므로
+      }
       var count = response.data.count;
       var replies = response.data.replies;
 
@@ -211,7 +239,11 @@ $().ready(function () {
   };
 
   var boardId = $(".grid").data("id");
-  loadReplies(boardId);
+  loadReplies(boardId, 0); //0번페이지에 있는 reply를 다 가지고 와라
+
+  $("#get-all-replies-btn").on("click", function () {
+    loadReplies(boardId);
+  });
 
   $("#btn-save-reply").on("click", function () {
     var reply = $("#txt-reply").val();

@@ -17,6 +17,13 @@ public interface BoardDao {
 	public int getBoardAllCount();
 	
 	/**
+	 * 검색어에 대응하기위한 count 만들어주기
+	 * @param searchBoardVO
+	 * @return
+	 */
+	public int searchBoardAllCount(SearchBoardVO searchBoardVO);
+	
+	/**
 	 * DB에 저장된 모든 게시글의 목록을 조회한다
 	 * (SELECT * FROM BOARD WHERE DEL_YN = 'N';) 이런식으로 삭제여부 조회
 	 * @return
@@ -63,8 +70,7 @@ public interface BoardDao {
 	 * @param id 삭제할 게시글의 번호
 	 * @return 삭제 영향을 받은 데이터의 건수
 	 */
-	public int deleteOneBoard(int id);
-	
+	public int deleteOneBoard(int id);	
 	
 	
 }
