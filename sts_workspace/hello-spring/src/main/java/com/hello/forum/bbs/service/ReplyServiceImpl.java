@@ -8,54 +8,60 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hello.forum.bbs.dao.ReplyDao;
 import com.hello.forum.bbs.vo.ReplyVO;
+import com.hello.forum.bbs.vo.SearchReplyVO;
 import com.hello.forum.exceptions.PageNotFoundException;
 
 @Service
-public class ReplyServiceImpl implements ReplyService{
+public class ReplyServiceImpl implements ReplyService {
 
 	@Autowired
 	private ReplyDao replyDao;
 
 	@Override
-	public List<ReplyVO> getAllReplies(int boardId){
-		return replyDao.getAllReplies(boardId);
+	public List<ReplyVO> getAllReplies(SearchReplyVO searchReplyVO) {
+		return this.replyDao.getAllReplies(searchReplyVO);
 	}
-	
+
 	@Transactional
 	@Override
 	public boolean createNewReply(ReplyVO replyVO) {
-		int insertCount = replyDao.createNewReply(replyVO);
-		return insertCount > 0;
+		return this.replyDao.createNewReply(replyVO) > 0;
 	}
 
 	@Transactional
 	@Override
 	public boolean deleteOneReply(int replyId, String email) {
-		ReplyVO replyVO = replyDao.getOneReply(replyId);
+		ReplyVO replyVO = this.replyDao.getOneReply(replyId);
+
 		if (!email.equals(replyVO.getEmail())) {
 			throw new PageNotFoundException();
 		}
-		return replyDao.deleteOneReply(replyId) > 0;
+		return this.replyDao.deleteOneReply(replyId) > 0;
 	}
 
 	@Transactional
 	@Override
 	public boolean modifyOneReply(ReplyVO replyVO) {
-		ReplyVO originReplyVO = replyDao.getOneReply(replyVO.getReplyId());
-		if (!replyVO.getEmail().equals(originReplyVO.getEmail())) {
+		ReplyVO originalReplyVO = this.replyDao
+				.getOneReply(replyVO.getReplyId());
+
+		if (!originalReplyVO.getEmail().equals(replyVO.getEmail())) {
 			throw new PageNotFoundException();
 		}
-		return replyDao.modifyOneReply(replyVO) > 0;
 
+		return this.replyDao.modifyOneReply(replyVO) > 0;
 	}
 
 	@Transactional
 	@Override
 	public boolean recommendOneReply(int replyId, String email) {
-		ReplyVO replyVO = replyDao.getOneReply(replyId);
+		ReplyVO replyVO = this.replyDao.getOneReply(replyId);
+
 		if (email.equals(replyVO.getEmail())) {
 			throw new PageNotFoundException();
 		}
-		return replyDao.recommendOneReply(replyId) > 0;	
+
+		return this.replyDao.recommendOneReply(replyId) > 0;
 	}
+
 }

@@ -3,6 +3,7 @@ package com.hello.forum.bbs.dao;
 import java.util.List;
 
 import com.hello.forum.bbs.vo.ReplyVO;
+import com.hello.forum.bbs.vo.SearchReplyVO;
 
 public interface ReplyDao {
 
@@ -11,7 +12,10 @@ public interface ReplyDao {
 	 * @param boardId 조회할게시글 번호
 	 * @return 게시글에 등록된 모든댓글 목록
 	 */
-	public List<ReplyVO> getAllReplies(int boardId);
+	public String NAME_SPACE = "com.hello.forum.bbs.dao.ReplyDao";
+
+	//	public List<ReplyVO> getAllReplies(int boardId);
+	public List<ReplyVO> getAllReplies(SearchReplyVO searchReplyVO);
 	
 	/**
 	 * 댓글 하나 조회

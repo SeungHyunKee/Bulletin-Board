@@ -16,6 +16,7 @@ public interface BoardDao {
 	 */
 	public int getBoardAllCount();
 	
+	
 	/**
 	 * 검색어에 대응하기위한 count 만들어주기
 	 * @param searchBoardVO

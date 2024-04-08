@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.hello.forum.bbs.vo.ReplyVO;
+import com.hello.forum.bbs.vo.SearchReplyVO;
 
 @Repository
 public class ReplyDaoImpl extends SqlSessionDaoSupport implements ReplyDao {
@@ -17,38 +18,42 @@ public class ReplyDaoImpl extends SqlSessionDaoSupport implements ReplyDao {
 	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
 		super.setSqlSessionTemplate(sqlSessionTemplate);
 	}
-	
+
 	@Override
-	public List<ReplyVO> getAllReplies(int boardId){
-		return getSqlSession().selectList("getAllReplies", boardId);
+	public List<ReplyVO> getAllReplies(SearchReplyVO searchReplyVO) {
+
+		return getSqlSession().selectList(
+				ReplyDao.NAME_SPACE + ".getAllReplies", searchReplyVO);
 	}
 
 	@Override
 	public ReplyVO getOneReply(int replyId) {
-		return getSqlSession().selectOne("getOneReply", replyId);
+		return getSqlSession().selectOne(ReplyDao.NAME_SPACE + ".getOneReply",
+				replyId);
 	}
 
 	@Override
 	public int createNewReply(ReplyVO replyVO) {
-		return getSqlSession().insert("createNewReply", replyVO);
+		return getSqlSession().insert(ReplyDao.NAME_SPACE + ".createNewReply",
+				replyVO);
 	}
 
 	@Override
 	public int deleteOneReply(int replyId) {
-		return getSqlSession().update("deleteOneReply", replyId);
+		return getSqlSession().update(ReplyDao.NAME_SPACE + ".deleteOneReply",
+				replyId);
 	}
 
 	@Override
 	public int modifyOneReply(ReplyVO replyVO) {
-		return getSqlSession().update("modifyOneReply", replyVO);
+		return getSqlSession().update(ReplyDao.NAME_SPACE + ".modifyOneReply",
+				replyVO);
 	}
 
 	@Override
 	public int recommendOneReply(int replyId) {
-		return getSqlSession().update("recommendOneReply", replyId);
+		return getSqlSession()
+				.update(ReplyDao.NAME_SPACE + ".recommendOneReply", replyId);
 	}
-	
-	
-	
-	
+
 }

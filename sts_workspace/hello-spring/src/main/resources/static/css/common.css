@@ -129,6 +129,11 @@ div.replies > .reply-items {
   grid-template-rows: 1fr;
   row-gap: 10px;
 }
+
+.reply .reply {
+  margin-top: 10px;
+}
+
 pre.content {
   margin: 0px;
 }

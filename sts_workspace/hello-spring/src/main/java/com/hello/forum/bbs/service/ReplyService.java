@@ -3,6 +3,7 @@ package com.hello.forum.bbs.service;
 import java.util.List;
 
 import com.hello.forum.bbs.vo.ReplyVO;
+import com.hello.forum.bbs.vo.SearchReplyVO;
 
 public interface ReplyService {
 
@@ -11,8 +12,7 @@ public interface ReplyService {
 	 * @param boardId 조회할 게시글의 번호
 	 * @return 게시글에 등록된 모든 댓글 목록
 	 */
-	public List<ReplyVO> getAllReplies(int boardId);
-	
+	public List<ReplyVO> getAllReplies(SearchReplyVO searchReplyVO);	
 	/**
 	 * 게시글에 댓글 등록
 	 * @param replyVO 등록할 댓글의 정보
