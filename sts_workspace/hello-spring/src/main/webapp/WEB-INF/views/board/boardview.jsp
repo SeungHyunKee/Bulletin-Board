@@ -73,7 +73,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       </div>
 
       <!--JSP 페이지에서 로그인한 사용자와 게시글의 작성자가 동일한 경우에만 수정과 삭제 링크를 표시-->
-      <c:if test="${sessionScope._LOGIN_USER_.email eq boardVO.email}">
+      <c:if
+        test="${sessionScope._LOGIN_USER_.email eq boardVO.email || sessionScope._LOGIN_USER_.adminYn eq 'Y'}"
+      >
         <!--세션에 저장된 현재 로그인한 사용자의 이메일 == 해당 게시글의 작성자의 이메일 이라면, -->
         <div class="btn-group">
           <div class="right-align">

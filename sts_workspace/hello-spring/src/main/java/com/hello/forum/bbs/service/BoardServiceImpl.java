@@ -198,6 +198,32 @@ public class BoardServiceImpl implements BoardService {
 		int deletedCount = this.boardDao.deleteOneBoard(id);
 		return deletedCount > 0;
 	}
+	
+	@Transactional
+	@Override
+	public boolean deleteManyBoard(List<Integer> deleteItems) {
+
+		List<BoardVO> originalBoardList = this.boardDao.selectManyBoard(deleteItems);
+		
+		//첨부파일이 존재하는 게시글이라면 첨부파일을 삭제하는 코드 (전달받은 리스트 자체를 한꺼번에 지움)
+		for (BoardVO boardVO : originalBoardList) {
+			if(boardVO != null) {
+				//기존게시글에 첨부된 파일의 이름을 받아온다
+				String storedFileName = boardVO.getFileName();
+				//첨부된파일의 이름이 있는지 확인하고,
+				//만약 첨부된파일의 이름이 있다면, 이게시글은 파일이 첨부되었던 게시글이다.
+				if(storedFileName != null && storedFileName.length() > 0) { //만약 첨부된 파일의 이름이 있다면,
+					//첨부된 파일을 삭제한다.
+					this.fileHandler.deleteFileByFileName(storedFileName);
+				}
+			}
+		}
+		
+		int deletedCount = this.boardDao.deleteManyBoard(deleteItems);
+		
+		return deletedCount > 0;
+	}
+	
 
 	@Transactional
 	@Override
@@ -305,6 +331,8 @@ public class BoardServiceImpl implements BoardService {
 		// 한건이상 insert했고, 엑셀파일의 row개수와 insert한 row개수가 같다면 성공했다고 보는 것.
 		return insertedCount > 0 && insertedCount == rowSize;
 	}
+
+	
 
 	
 

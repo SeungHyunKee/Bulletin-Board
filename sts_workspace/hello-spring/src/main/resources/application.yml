@@ -32,6 +32,7 @@ app:
         ignore-url-patterns:
             /member/login,
             /ajax/member/login,
+            /ajax/menu/list,
             /member/regist/**,
             /ajax/member/regist/**,
             /member/success-delete-me,

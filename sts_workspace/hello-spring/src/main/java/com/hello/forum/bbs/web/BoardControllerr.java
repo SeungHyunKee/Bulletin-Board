@@ -236,9 +236,11 @@ public class BoardControllerr {
 		//1. 전달받은 id의값으로 게시글을 조회한다
 		BoardVO boardVO = this.boardService.getOneBoard(id, false);
 		
-		if (!memberVO.getEmail().equals(boardVO.getEmail())) {
-			throw new PageNotFoundException();
+		if (!memberVO.getEmail().equals(boardVO.getEmail())
+				&& memberVO.getAdminYn().equals("N")){
+				throw new PageNotFoundException();
 		}
+		
 		//2. 게시글의 정보를 화면에 보내준다
 		model.addAttribute("boardVO", boardVO);
 		
@@ -259,8 +261,8 @@ public class BoardControllerr {
 								 Model model,
 								 @SessionAttribute("_LOGIN_USER_")MemberVO memberVO) {
 		BoardVO originalBoardVO = this.boardService.getOneBoard(id, false);
-		
-		if (!originalBoardVO.getEmail().equals(memberVO.getEmail())) {
+		if (!originalBoardVO.getEmail().equals(memberVO.getEmail())
+				&& memberVO.getAdminYn().equals("N")) {
 			throw new PageNotFoundException();
 		}
 		
@@ -319,13 +321,29 @@ public class BoardControllerr {
 	 * 
 	 */
 	
+	@ResponseBody
+	@PostMapping("/ajax/board/delete/massive")
+	public AjaxResponse doDeleteMassive(@RequestParam("deleteItems[]") List<Integer> deleteItems,
+			@SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
+		
+		if (memberVO.getAdminYn().equals("N")) {
+			throw new PageNotFoundException();
+		}
+		
+		boolean deleteResult = this.boardService.deleteManyBoard(deleteItems);
+		
+		return new AjaxResponse().append("result", deleteResult);
+	}
+	
+	
 	//삭제 - 이 게시글을 지워라
 	@GetMapping("/board/delete/{id}")
 	public String doDeleteBoard(@PathVariable int id,
 								@SessionAttribute("_LOGIN_USER_") MemberVO memberVO) {
 		
 		BoardVO originalBoardVO = this.boardService.getOneBoard(id, false);
-		if (!originalBoardVO.getEmail().equals(memberVO.getEmail())) {
+		if (!originalBoardVO.getEmail().equals(memberVO.getEmail()) 
+				&& memberVO.getAdminYn().equals("N")) {
 			throw new PageNotFoundException();
 		}
 		

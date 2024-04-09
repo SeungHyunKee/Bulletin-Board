@@ -18,6 +18,9 @@ pageEncoding="UTF-8"%> <%@ taglib prefix="c" uri="jakarta.tags.core" %>
       보여달라는것 --%>
       <c:otherwise>
         <li style="margin-right: 1rem">
+          <c:if test="${sessionScope._LOGIN_USER_.adminYn eq 'Y'}">
+            <span>(Super Admin)</span>
+          </c:if>
           ${sessionScope._LOGIN_USER_.name} (<span id="login-email"
             >${sessionScope._LOGIN_USER_.email}</span
           >)

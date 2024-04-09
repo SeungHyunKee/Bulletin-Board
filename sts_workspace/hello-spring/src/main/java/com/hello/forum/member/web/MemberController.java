@@ -160,7 +160,8 @@ public class MemberController {
 			
 //			try {
 				MemberVO member = this.memberService.getMember(memberVO);
-				//로그인이 정상적으로 이루어졌다면 세션을 생성한다
+				//로그인이 정상적으로 이루어졌다면 세션을 생성한다.
+				// ${sessionScope.LOGIN_USER_.admin eq 'Y'}
 				session.setAttribute("_LOGIN_USER_", member);
 				session.setMaxInactiveInterval(20 * 60); //세션이 유지될 수 있는 시간을 지정할수있다(default : 30분)
 //			}catch(IllegalArgumentException iae) {

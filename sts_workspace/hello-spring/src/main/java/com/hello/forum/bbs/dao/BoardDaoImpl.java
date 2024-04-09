@@ -102,6 +102,20 @@ public class BoardDaoImpl extends SqlSessionDaoSupport implements BoardDao {
 	public int deleteOneBoard(int id) {
 		return getSqlSession().update(BoardDao.NAME_SPACE + ".deleteOneBoard", id);
 	}
+
+
+
+	@Override
+	public List<BoardVO> selectManyBoard(List<Integer> deleteItems) {
+		return getSqlSession().selectList(BoardDao.NAME_SPACE + ".selectManyBoard", deleteItems);
+	}
+
+
+
+	@Override
+	public int deleteManyBoard(List<Integer> deleteItems) {
+		return getSqlSession().update(BoardDao.NAME_SPACE + ".deleteManyBoard", deleteItems);
+	}
 	
 
 }

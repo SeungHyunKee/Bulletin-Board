@@ -1,4 +1,28 @@
 $().ready(function () {
+  $("#deleteMassiveBoard").on("click", function () {
+    //선택된 체크박스만 가져온다
+    var checkedItems = $(".target-board-id:checked");
+
+    //선택된 체크박스만 반복하며 서버로 보낼 파라미터를 생성한다
+    var itemsArray = [];
+    checkedItems.each(function (index, data) {
+      itemsArray.push($(data).val());
+    });
+
+    //서버로 전송한다 (ajax) - 배열데이터는 get이 아닌 post로 보냄
+    $.post(
+      "/ajax/board/delete/massive",
+      { deleteItems: itemsArray },
+      function (response) {
+        var result = response.data.result;
+        if (result) {
+          //삭제가 완료되면 현재페이지를 새로고침 한다
+          location.reload();
+        }
+      }
+    );
+  });
+
   // ex) 6페이지 보다가 10,20,30,50,100 값 바뀌면 1페이지로 돌아가는 기능 구현을 위함
   $("#list-size").on("change", function () {
     search(0);
